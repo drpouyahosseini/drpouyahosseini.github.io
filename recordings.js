@@ -81,3 +81,28 @@ player.addEventListener('pause', renderPlayback);
 player.addEventListener('ended', renderPlayback);
 player.addEventListener('error', reportPlaybackError);
 player.addEventListener('timeupdate', renderProgress);
+
+
+const mini = document.querySelector('.mini-player');
+const miniButton = mini.querySelector('button');
+let hasPlayed = false;
+let fullPlayerVisible = false;
+function refreshMini() {
+  mini.hidden = !hasPlayed || fullPlayerVisible || player.ended;
+  document.body.classList.toggle('with-mini', !mini.hidden);
+  mini.querySelector('img').src = cover.src;
+  mini.querySelector('strong').textContent = caption.textContent;
+  mini.querySelector('small').textContent = player.paused ? 'Paused' : 'Now playing';
+  miniButton.textContent = player.paused ? '▶' : 'Ⅱ';
+  miniButton.setAttribute('aria-label', (player.paused ? 'Play ' : 'Pause ') + caption.textContent);
+}
+new IntersectionObserver(([entry]) => {
+  fullPlayerVisible = entry.isIntersecting;
+  refreshMini();
+}).observe(player);
+player.addEventListener('play', () => { hasPlayed = true; refreshMini(); });
+for (const eventName of ['pause', 'ended', 'loadedmetadata']) player.addEventListener(eventName, refreshMini);
+miniButton.addEventListener('click', () => {
+  if (player.paused) player.play().catch(reportPlaybackError);
+  else player.pause();
+});

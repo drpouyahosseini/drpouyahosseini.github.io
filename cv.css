@@ -93,3 +93,7 @@
   .cv-expertise div, .cv-section li { break-inside: avoid; }
   .cv-section li, .cv-section p { orphans: 3; widows: 3; }
 }
+
+.cv-section .pub-year {font-family:var(--serif);font-size:2rem;margin:2.2rem 0 .45rem;color:var(--accent)}
+.bibliography .authors strong {color:var(--ink)}
+.bibliography .pub-kind {font-weight:650}
