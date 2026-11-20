@@ -56,3 +56,42 @@ document.querySelector('#copy-url').addEventListener('click', async () => {
   }
 });
 document.querySelector('#close-share').addEventListener('click', () => shareDialog.close());
+
+const figureLink = document.querySelector('#view-catalyst');
+const figureViewer = document.querySelector('#figure-viewer');
+if (figureLink && figureViewer?.showModal) {
+  figureLink.setAttribute('aria-haspopup', 'dialog');
+  figureLink.addEventListener('click', event => {
+    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+    event.preventDefault();
+    figureViewer.showModal();
+  });
+  figureViewer.addEventListener('click', event => {
+    if (event.target !== figureViewer) return;
+    const box = figureViewer.getBoundingClientRect();
+    if (event.clientX < box.left || event.clientX > box.right ||
+        event.clientY < box.top || event.clientY > box.bottom) figureViewer.close();
+  });
+  figureViewer.addEventListener('close', () => figureLink.focus({ preventScroll: true }));
+}
+
+if ('IntersectionObserver' in window) {
+  const revealSelector = '.section-heading, .method-link, .catalyst-figure, .project-card, .cv-section > h2';
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add('entered-view');
+      observer.unobserve(entry.target);
+    }
+  });
+  const observeSections = root => root.querySelectorAll(revealSelector).forEach(el => observer.observe(el));
+  observeSections(document);
+  // The CV can be inserted while the homepage audio player stays mounted.
+  new MutationObserver(records => {
+    for (const record of records) {
+      for (const node of record.addedNodes) {
+        if (node.nodeName === 'MAIN') observeSections(node);
+      }
+    }
+  }).observe(document.querySelector('main').parentNode, {childList:true});
+}
