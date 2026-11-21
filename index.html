@@ -46,13 +46,42 @@
 <script defer src="recordings.js?v=20261121"></script>
 <script defer src="portfolio-nav.js?v=20261121d"></script>
 <style>
-.scale-gallery{margin:0;border:0;padding:1rem;min-width:0;background:linear-gradient(145deg,#263e37,#102724);display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.4rem;color:#fff}
-.scale-gallery legend,.scale-gallery input{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
-.scale-gallery label{cursor:pointer;color:#e9eee9;border:1px solid #779088;border-radius:2rem;padding:.45rem .65rem;font-size:.85rem}
-.scale-gallery input:checked+label{background:#f2ebd8;border-color:#f2ebd8;color:#182922}
-.scale-gallery input:focus-visible+label{outline:3px solid #e8b86a;outline-offset:2px}
-.scale-gallery img{display:none;order:-1;width:100%;height:clamp(20rem,45vw,29rem);object-fit:contain}
-.scale-gallery input:checked+label+img{display:block}
+.scale-gallery {
+  margin: 0; padding: clamp(.8rem, 3vw, 2rem); min-width: 0; border: 0;
+  display: grid; grid-template-columns: minmax(0, 1fr) max-content;
+  grid-template-rows: 1fr repeat(5, auto) 1fr; column-gap: clamp(.6rem, 2vw, 1.75rem);
+  background: radial-gradient(ellipse at 26% 35%, #496753, #213f36 56%, #132c29);
+  color: #f7f1df;
+}
+.scale-gallery legend, .scale-gallery input {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%);
+}
+.scale-gallery img {
+  grid-area: 1 / 1 / -1 / 2; width: 100%; height: 100%; max-height: 30rem;
+  align-self: center; object-fit: contain; display: none; filter: drop-shadow(0 5px 9px #071c1580);
+}
+.scale-gallery input:checked + label + img {display: block}
+.scale-gallery label, .scale-gallery button {
+  grid-column: 2; cursor: pointer; font: inherit; font-size: clamp(.8rem, 2vw, .95rem);
+  line-height: 1.3; padding: .75rem .4rem; text-align: left;
+}
+.scale-gallery label {color: #dcE7df; border-bottom: 1px solid #698073}
+.scale-gallery label:first-of-type {grid-row: 2}
+.scale-gallery label:nth-of-type(2) {grid-row: 3}
+.scale-gallery label:nth-of-type(3) {grid-row: 4}
+.scale-gallery label:nth-of-type(4) {grid-row: 5}
+.scale-gallery button {grid-row: 6}
+.scale-gallery input:checked + label {color: #fff5d1; font-weight: 700}
+.scale-gallery label::before {content: "○"; margin-right: .45em}
+.scale-gallery input:checked + label::before {content: "●"; color: #e3c784}
+.scale-gallery input:focus-visible + label {outline: 2px solid #fbe5ad; outline-offset: 2px}
+.scale-gallery button {background: none; border: 0; color: #fff1ce; min-height: 44px}
+.scale-gallery button[hidden] {display: none}
+.scale-gallery {height: clamp(24rem, 55vw, 33rem); box-sizing: border-box}
+@media (prefers-reduced-motion: no-preference) {
+  .scale-gallery input:checked + label + img {animation: scale-appear .55s ease-out}
+  @keyframes scale-appear {from {opacity: .4} to {opacity: 1}}
+}
 </style>
 </head>
 <body id="top">
@@ -190,6 +219,7 @@
 <input type="radio" name="scale-view" id="view-bayat-tork" ><label for="view-bayat-tork">Bayat Tork</label><img src="bayat-tork.jpeg" alt="Bayat Tork with D sharp highlighted on the scale wheel" loading="lazy">
 <input type="radio" name="scale-view" id="view-scale-notes" ><label for="view-scale-notes">Notes</label><img src="scale-notes.jpeg" alt="Notes and research sources for Bayat Tork" loading="lazy">
 <input type="radio" name="scale-view" id="view-track-analyzer" ><label for="view-track-analyzer">Analyzer</label><img src="track-analyzer.png" alt="Track Scale Analyzer with recording and analysis settings" loading="lazy">
+<button type="button" class="scale-rotation" hidden>Ⅱ Pause</button>
 </fieldset>
           <div class="project-text">
             <div class="project-type"><img src="persian-music-scales-icon.png" alt="" width="38" height="38"><p class="eyebrow">Interactive app</p></div>
@@ -237,6 +267,40 @@
   <img src="cobalt-figure.jpg" width="546" height="209" alt="Three structural models show framework-bound cobalt transforming into cobalt hydroxide and then spinel cobalt oxide.">
   <p>Figure 5 · Hosseini et al., <i>Advanced Science</i></p>
 </dialog>
+<script>
+(() => {
+  const gallery = document.querySelector('.scale-gallery');
+  const slides = [...gallery.querySelectorAll('input')];
+  const control = gallery.querySelector('button');
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  let rotating = !motion.matches;
+  let visible = false;
+  let timer;
+  function update() {
+    clearInterval(timer);
+    control.textContent = rotating ? 'Ⅱ Pause' : '▷ Play';
+    control.setAttribute('aria-label', rotating ? 'Pause screenshot rotation' : 'Start screenshot rotation');
+    if (rotating && visible && !document.hidden) {
+      timer = setInterval(() => {
+        const current = slides.findIndex(slide => slide.checked);
+        slides[(current + 1) % slides.length].checked = true;
+      }, 8000);
+    }
+  }
+  function stop() { rotating = false; update(); }
+  gallery.addEventListener('change', stop);
+  gallery.addEventListener('focusin', event => { if (slides.includes(event.target)) stop(); });
+  control.addEventListener('click', () => { rotating = !rotating; update(); });
+  motion.addEventListener('change', () => { if (motion.matches) stop(); });
+  document.addEventListener('visibilitychange', update);
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    update();
+  }, {threshold: .3}).observe(gallery);
+  control.hidden = false;
+  update();
+})();
+</script>
 </body>
 </html>
 
