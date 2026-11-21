@@ -5,6 +5,7 @@ const caption = document.querySelector('#current-track');
 const cover = document.querySelector('#track-cover');
 const state = document.querySelector('#play-state');
 const message = document.querySelector('#play-message');
+let remainingTracks = new Set(tracks);
 let currentTrack;
 let bars = [];
 
@@ -27,6 +28,7 @@ function selectTrack(track) {
     currentTrack.classList.remove('playing');
   }
   currentTrack = track;
+  remainingTracks.delete(track);
   track.setAttribute('aria-current', 'true');
   const title = track.firstElementChild.textContent;
   cover.src = track.dataset.cover;
@@ -51,6 +53,20 @@ function reportPlaybackError() {
   message.hidden = false;
 }
 
+async function playTrack(track) {
+  if (currentTrack !== track) {
+    player.src = track.href;
+    selectTrack(track);
+  } else if (player.error) {
+    player.load();
+  }
+  try {
+    await player.play();
+  } catch (error) {
+    if (error.name !== 'AbortError' && currentTrack === track) reportPlaybackError();
+  }
+}
+
 for (const track of tracks) {
   track.addEventListener('click', async event => {
     if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
@@ -59,17 +75,7 @@ for (const track of tracks) {
       player.pause();
       return;
     }
-    if (currentTrack !== track) {
-      player.src = track.href;
-      selectTrack(track);
-    } else if (player.error) {
-      player.load();
-    }
-    try {
-      await player.play();
-    } catch (error) {
-      if (error.name !== 'AbortError' && currentTrack === track) reportPlaybackError();
-    }
+    await playTrack(track);
   });
 }
 selectTrack(tracks[0]);
@@ -78,7 +84,13 @@ player.addEventListener('play', () => {
   renderPlayback();
 });
 player.addEventListener('pause', renderPlayback);
-player.addEventListener('ended', renderPlayback);
+player.addEventListener('ended', () => {
+  if (!player.ended) return;
+  if (!remainingTracks.size) remainingTracks = new Set(tracks);
+  const candidates = [...remainingTracks].filter(track => track !== currentTrack);
+  const next = candidates[Math.floor(Math.random() * candidates.length)] || currentTrack;
+  playTrack(next);
+});
 player.addEventListener('error', reportPlaybackError);
 player.addEventListener('timeupdate', renderProgress);
 
