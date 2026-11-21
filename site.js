@@ -95,3 +95,25 @@ if ('IntersectionObserver' in window) {
     }
   }).observe(document.querySelector('main').parentNode, {childList:true});
 }
+
+const portrait = document.querySelector('.hero-art .portrait');
+if (portrait) {
+  const setar = portrait.querySelector('.setar-portrait');
+  const toggle = portrait.querySelector('.portrait-toggle');
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  let cycling = !motion.matches;
+  let timer;
+  function schedulePortrait() {
+    clearInterval(timer);
+    toggle.hidden = false;
+    toggle.textContent = cycling ? 'Ⅱ' : '▶';
+    toggle.setAttribute('aria-label', cycling ? 'Pause portrait slideshow' : 'Play portrait slideshow');
+    if (cycling && !document.hidden) timer = setInterval(() => portrait.classList.toggle('show-setar'), 9500);
+  }
+  setar.decode().then(() => {
+    schedulePortrait();
+    toggle.addEventListener('click', () => {cycling = !cycling; schedulePortrait();});
+    motion.addEventListener('change', () => {cycling = !motion.matches; schedulePortrait();});
+    document.addEventListener('visibilitychange', schedulePortrait);
+  }).catch(() => {});
+}
