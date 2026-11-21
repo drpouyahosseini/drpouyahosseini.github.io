@@ -14,7 +14,7 @@ let cvRequest;
 let navigationVersion = 0;
 
 async function prepareCV() {
-  const response = await fetch(cvURL.pathname + '?v=20261121c');
+  const response = await fetch(cvURL.pathname + '?v=20261121d');
   if (!response.ok) throw new Error('CV unavailable');
   const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
   const hero = doc.querySelector('.cv-intro');
