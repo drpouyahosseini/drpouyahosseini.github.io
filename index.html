@@ -45,6 +45,15 @@
 <link rel="stylesheet" href="cv.css?v=20261121" id="cv-styles" media="not all">
 <script defer src="recordings.js?v=20261121"></script>
 <script defer src="portfolio-nav.js?v=20261121d"></script>
+<style>
+.scale-gallery{margin:0;border:0;padding:1rem;min-width:0;background:linear-gradient(145deg,#263e37,#102724);display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:.4rem;color:#fff}
+.scale-gallery legend,.scale-gallery input{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.scale-gallery label{cursor:pointer;color:#e9eee9;border:1px solid #779088;border-radius:2rem;padding:.45rem .65rem;font-size:.85rem}
+.scale-gallery input:checked+label{background:#f2ebd8;border-color:#f2ebd8;color:#182922}
+.scale-gallery input:focus-visible+label{outline:3px solid #e8b86a;outline-offset:2px}
+.scale-gallery img{display:none;order:-1;width:100%;height:clamp(20rem,45vw,29rem);object-fit:contain}
+.scale-gallery input:checked+label+img{display:block}
+</style>
 </head>
 <body id="top">
 <a class="skip" href="#main">Skip to content</a>
@@ -176,9 +185,12 @@
       </div>
       <div id="music-projects" class="projects">
         <article class="project-card">
-          <a class="app-screenshot" style="display:block" href="https://persianmusicscales.github.io/Persian-Music-Scales-App/" aria-label="Explore the Persian Music Scales app">
-            <img src="persian-music-scales-app.png" width="1024" height="768" style="display:block;width:100%;height:auto" alt="Persian Music Scales app showing Shur, the A tonic and the circular scale display" loading="lazy">
-          </a>
+          <fieldset class="scale-gallery"><legend>Screenshots</legend>
+<input type="radio" name="scale-view" id="view-shur" checked><label for="view-shur">Shur</label><img src="shur.jpeg" alt="Shur scale on C with the interval wheel and playback controls" loading="lazy">
+<input type="radio" name="scale-view" id="view-bayat-tork" ><label for="view-bayat-tork">Bayat Tork</label><img src="bayat-tork.jpeg" alt="Bayat Tork with D sharp highlighted on the scale wheel" loading="lazy">
+<input type="radio" name="scale-view" id="view-scale-notes" ><label for="view-scale-notes">Notes</label><img src="scale-notes.jpeg" alt="Notes and research sources for Bayat Tork" loading="lazy">
+<input type="radio" name="scale-view" id="view-track-analyzer" ><label for="view-track-analyzer">Analyzer</label><img src="track-analyzer.png" alt="Track Scale Analyzer with recording and analysis settings" loading="lazy">
+</fieldset>
           <div class="project-text">
             <div class="project-type"><img src="persian-music-scales-icon.png" alt="" width="38" height="38"><p class="eyebrow">Interactive app</p></div>
             <h3>Persian Music Scales</h3><p>Listen to the notes of a dastgāh or āvāz. Compare its intervals with a diatonic scale and hear where the pitches diverge.</p>
