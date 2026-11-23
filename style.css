@@ -415,12 +415,12 @@ html:has(#figure-viewer[open]) {overflow:hidden;scrollbar-gutter:stable}
  @keyframes section-arrival {from {opacity:.65;translate:0 .75rem} to {opacity:1;translate:0 0}}
 }
 
-.portrait .setar-portrait {position:absolute;inset:.4rem;width:calc(100% - .8rem);height:calc(100% - .8rem);object-position:54% 55%;opacity:0;pointer-events:none}
-@media(max-width:46rem){.portrait .setar-portrait{inset:.22rem;width:calc(100% - .44rem);height:calc(100% - .44rem)}}
+.portrait .portrait-slide {position:absolute;inset:.4rem;width:calc(100% - .8rem);height:calc(100% - .8rem);object-position:54% 55%;opacity:0;pointer-events:none}
+@media(max-width:46rem){.portrait .portrait-slide{inset:.22rem;width:calc(100% - .44rem);height:calc(100% - .44rem)}}
 @media(prefers-reduced-motion:no-preference){
- .portrait .setar-portrait {transition:opacity 3s ease-in-out}
+ .portrait .portrait-slide {transition:opacity 3s ease-in-out}
 }
-.portrait.show-setar .setar-portrait {opacity:1}
+.portrait .portrait-slide.is-visible {opacity:1}
 .portrait-toggle {position:absolute;right:.7rem;bottom:.7rem;width:44px;height:44px;color:white;background:#13271ed9;border:1px solid #ffffff80;border-radius:50%;cursor:pointer;font-size:1rem}
 
 .brand-researchgate { --brand-image: url("researchgate.svg"); }

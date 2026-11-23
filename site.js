@@ -98,7 +98,8 @@ if ('IntersectionObserver' in window) {
 
 const portrait = document.querySelector('.hero-art .portrait');
 if (portrait) {
-  const setar = portrait.querySelector('.setar-portrait');
+  const images = [...portrait.querySelectorAll('img')];
+  let active = 0;
   const toggle = portrait.querySelector('.portrait-toggle');
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   let cycling = !motion.matches;
@@ -108,9 +109,17 @@ if (portrait) {
     toggle.hidden = false;
     toggle.textContent = cycling ? 'Ⅱ' : '▶';
     toggle.setAttribute('aria-label', cycling ? 'Pause portrait slideshow' : 'Play portrait slideshow');
-    if (cycling && !document.hidden) timer = setInterval(() => portrait.classList.toggle('show-setar'), 9500);
+    if (cycling && !document.hidden) {
+      timer = setInterval(() => {
+        images[active].classList.remove('is-visible');
+        images[active].setAttribute('aria-hidden', 'true');
+        active = (active + 1) % images.length;
+        images[active].classList.add('is-visible');
+        images[active].removeAttribute('aria-hidden');
+      }, 9500);
+    }
   }
-  setar.decode().then(() => {
+  Promise.all(images.map(image => image.decode())).then(() => {
     schedulePortrait();
     toggle.addEventListener('click', () => {cycling = !cycling; schedulePortrait();});
     motion.addEventListener('change', () => {cycling = !motion.matches; schedulePortrait();});
