@@ -193,6 +193,15 @@
   .scale-gallery input:checked + label + img {animation: scale-appear .55s ease-out}
   @keyframes scale-appear {from {opacity: .4} to {opacity: 1}}
 }
+#world-music-scales-atlas {grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(1rem,3vw,3rem)}
+.world-atlas-copy > img {border-radius:.7rem;margin-bottom:.65rem}
+.scale-gallery.atlas-gallery {width:100%;height:auto;aspect-ratio:1.08;background:#f2f3eb;padding:.45rem;border-radius:.85rem;grid-template-columns:1fr 1fr auto;grid-template-rows:minmax(0,1fr) auto;gap:.3rem}
+.atlas-gallery img {grid-area:1/1/2/-1;max-height:100%;filter:none}
+.atlas-gallery label:nth-of-type(n),.atlas-gallery button {grid-row:2;grid-column:auto;color:#17383b;border:0;text-align:center;min-height:44px}
+.atlas-gallery input:checked + label {color:#103b3d;background:#dae5dc;border-radius:.4rem}
+.atlas-gallery input:checked + label::before {color:#295b58}
+.atlas-gallery input:focus-visible + label {outline-color:#145c60}
+@media(max-width:48rem){#world-music-scales-atlas {grid-template-columns:minmax(0,1fr)}.world-atlas-copy{grid-row:1}}
 </style>
 </head>
 <body id="top">
@@ -329,8 +338,14 @@
         </section>
       </div>
       <section class="world-atlas-feature" id="world-music-scales-atlas" aria-labelledby="world-atlas-title">
-        <div class="world-atlas-emblem"><img src="world-atlas-logo.png" width="192" height="192" loading="lazy" alt=""></div>
+        <fieldset class="scale-gallery atlas-gallery">
+          <legend>World Music Scales Atlas screenshots</legend>
+          <input type="radio" name="atlas-view" id="atlas-view-globe" checked><label for="atlas-view-globe">Globe</label><img src="atlas-globe.png" width="1051" height="863" loading="lazy" alt="Atlas globe showing musical traditions from Africa to East Asia">
+          <input type="radio" name="atlas-view" id="atlas-view-harp"><label for="atlas-view-harp">Ganda harp</label><img src="atlas-harp.png" width="1067" height="903" loading="lazy" alt="Ganda harp model on C, showing five equal intervals of 240 cents">
+          <button type="button" class="scale-rotation" hidden>Ⅱ Pause</button>
+        </fieldset>
         <div class="world-atlas-copy">
+          <img src="world-atlas-logo.png" alt="" width="48" height="48" loading="lazy">
           <h3 id="world-atlas-title">World Music Scales Atlas</h3>
           <p>How does the distance between two notes change the sound of a scale? Explore 216 tuning models on an interactive globe, transpose a mode, and hear two scales from the same tonic.</p>
           <div class="world-atlas-actions">
@@ -395,8 +410,7 @@
   <p>Figure 5 · Hosseini et al., <i>Advanced Science</i></p>
 </dialog>
 <script>
-(() => {
-  const gallery = document.querySelector('.scale-gallery');
+document.querySelectorAll('.scale-gallery').forEach(gallery => {
   const slides = [...gallery.querySelectorAll('input')];
   const control = gallery.querySelector('button');
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -426,7 +440,7 @@
   }, {threshold: .3}).observe(gallery);
   control.hidden = false;
   update();
-})();
+});
 </script>
 </body>
 </html>
