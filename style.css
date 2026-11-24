@@ -439,3 +439,34 @@ html:has(#figure-viewer[open]) {overflow:hidden;scrollbar-gutter:stable}
 .scale-preview strong {font-size:clamp(2.4rem,5vw,4.7rem);line-height:1.1;margin:.2rem 0}
 .projects .project-text .actions {margin-top:.4rem}
 @media(max-width:44rem){#research .research-opening {grid-template-columns:1fr}.research-opening .catalyst-figure {grid-column:1;grid-row:auto}}
+
+.world-atlas-feature {
+  display: grid;
+  grid-template-columns: clamp(7rem, 15vw, 12rem) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.25rem, 4vw, 4rem);
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  margin-block: clamp(2rem, 4vw, 4rem);
+  border-radius: var(--radius);
+  background: linear-gradient(110deg, #082e32, #164447);
+  color: #fff3cf;
+  scroll-margin-top: 5rem;
+}
+.world-atlas-feature .world-atlas-emblem img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 22%;
+  box-shadow: 0 .65rem 1.6rem #00191d40;
+}
+.world-atlas-copy h3 { color: #fff3cf; font-size: clamp(2.35rem, 4.2vw, 4rem); }
+.world-atlas-copy p { margin-top: .65rem; max-width: 56ch; color: #d9e6df; }
+.world-atlas-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .4rem 1.35rem; margin-top: 1.15rem; }
+.world-atlas-actions a { display: inline-flex; align-items: center; gap: .55rem; min-height: 44px; color: #fff3cf; text-underline-offset: .23em; }
+.world-atlas-actions .world-atlas-open { background: #ffdfa1; color: #143233; padding: .5rem 1rem; border-radius: .35rem; text-decoration: none; font-weight: 650; }
+.world-atlas-actions .world-atlas-open:hover { background: #fff0ca; }
+.world-atlas-actions a:focus-visible { outline: 3px solid white; outline-offset: 4px; }
+@media (max-width: 37rem) {
+  .world-atlas-feature { grid-template-columns: 1fr; }
+  .world-atlas-feature .world-atlas-emblem { width: 4.75rem; }
+}
