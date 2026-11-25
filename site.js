@@ -1,3 +1,17 @@
+const siteLanguage = document.documentElement.lang;
+function ui(english, german, persian) {
+  return ({de: german, fa: persian})[siteLanguage] || english;
+}
+function updateLanguageLinks(onCV) {
+  for (const link of document.querySelectorAll('.language-links a')) {
+    const lang = link.hreflang;
+    const suffix = lang === 'en' ? '' : '-' + lang;
+    const hash = location.hash;
+    link.href = (onCV ? 'cv' + suffix + '.html' : suffix ? 'index' + suffix + '.html' : './') + hash;
+  }
+}
+updateLanguageLinks(document.body.classList.contains('cv-page'));
+window.addEventListener('hashchange', () => updateLanguageLinks(document.body.classList.contains('cv-page')));
 const menu = document.querySelector('.menu-toggle');
 const navigation = document.querySelector('#site-nav');
 const smallScreen = window.matchMedia('(max-width: 46rem)');
@@ -49,10 +63,10 @@ shareButton.addEventListener('click', async () => {
 document.querySelector('#copy-url').addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(shareInput.value);
-    copyStatus.textContent = 'Link copied.';
+    copyStatus.textContent = ui('Link copied.', 'Link kopiert.', 'پیوند کپی شد.');
   } catch {
     shareInput.select();
-    copyStatus.textContent = 'Select and copy the link above.';
+    copyStatus.textContent = ui('Select and copy the link above.', 'Den obigen Link auswählen und kopieren.', 'پیوند بالا را انتخاب و کپی کنید.');
   }
 });
 document.querySelector('#close-share').addEventListener('click', () => shareDialog.close());
@@ -108,7 +122,7 @@ if (portrait) {
     clearInterval(timer);
     toggle.hidden = false;
     toggle.textContent = cycling ? 'Ⅱ' : '▶';
-    toggle.setAttribute('aria-label', cycling ? 'Pause portrait slideshow' : 'Play portrait slideshow');
+    toggle.setAttribute('aria-label', cycling ? ui('Pause portrait slideshow', 'Porträtwechsel anhalten', 'توقف نمایش پیاپی پرتره\u200cها') : ui('Play portrait slideshow', 'Porträts abspielen', 'پخش پیاپی پرتره\u200cها'));
     if (cycling && !document.hidden) {
       timer = setInterval(() => {
         images[active].classList.remove('is-visible');
