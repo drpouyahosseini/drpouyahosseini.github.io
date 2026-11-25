@@ -19,7 +19,7 @@ function renderProgress() {
 function renderPlayback() {
   const playing = !player.paused && !player.ended;
   currentTrack.classList.toggle('playing', playing);
-  state.textContent = playing ? ui('Now playing', 'Wird gespielt', 'در حال پخش') : player.currentTime && !player.ended ? ui('Paused', 'Pausiert', 'مکث') : ui('Selected track', 'Ausgewähltes Stück', 'قطعهٔ انتخاب\u200cشده');
+  state.textContent = playing ? 'Now playing' : player.currentTime && !player.ended ? 'Paused' : 'Selected track';
 }
 
 function selectTrack(track) {
@@ -32,9 +32,9 @@ function selectTrack(track) {
   track.setAttribute('aria-current', 'true');
   const title = track.firstElementChild.textContent;
   cover.src = track.dataset.cover;
-  cover.alt = ui(title + ' cover artwork', 'Cover von ' + title, 'جلد «' + title + '»');
+  cover.alt = title + ' cover artwork';
   caption.textContent = title;
-  document.querySelector('#esfahan-note').hidden = !track.href.endsWith('/esfahan-waltz.mp3');
+  document.querySelector('#esfahan-note').hidden = title !== 'Esfahan Waltz';
   player.setAttribute('aria-label', title);
   message.hidden = true;
   message.textContent = '';
@@ -49,7 +49,7 @@ function selectTrack(track) {
 }
 
 function reportPlaybackError() {
-  message.textContent = ui('Playback could not start. Try the audio controls or choose another track.', 'Die Wiedergabe konnte nicht gestartet werden. Verwenden Sie die Audiosteuerung oder wählen Sie ein anderes Stück.', 'پخش آغاز نشد. از کنترل\u200cهای پخش استفاده کنید یا قطعهٔ دیگری را انتخاب کنید.');
+  message.textContent = 'Playback could not start. Try the audio controls or choose another track.';
   message.hidden = false;
 }
 
@@ -104,9 +104,9 @@ function refreshMini() {
   document.body.classList.toggle('with-mini', !mini.hidden);
   mini.querySelector('img').src = cover.src;
   mini.querySelector('strong').textContent = caption.textContent;
-  mini.querySelector('small').textContent = player.paused ? ui('Paused', 'Pausiert', 'مکث') : ui('Now playing', 'Wird gespielt', 'در حال پخش');
+  mini.querySelector('small').textContent = player.paused ? 'Paused' : 'Now playing';
   miniButton.textContent = player.paused ? '▶' : 'Ⅱ';
-  miniButton.setAttribute('aria-label', (player.paused ? ui('Play ', 'Abspielen: ', 'پخش ') : ui('Pause ', 'Pausieren: ', 'مکث ')) + caption.textContent);
+  miniButton.setAttribute('aria-label', (player.paused ? 'Play ' : 'Pause ') + caption.textContent);
 }
 new IntersectionObserver(([entry]) => {
   fullPlayerVisible = entry.isIntersecting;

@@ -470,14 +470,3 @@ html:has(#figure-viewer[open]) {overflow:hidden;scrollbar-gutter:stable}
   .world-atlas-feature { grid-template-columns: 1fr; }
   .world-atlas-feature .world-atlas-emblem { width: 4.75rem; }
 }
-
-.language-links {display:inline-flex;align-items:center;gap:.25rem;border-inline-start:1px solid var(--hero-rule);padding-inline-start:.5rem;white-space:nowrap}
-.site-nav .language-links a {padding-inline:.3rem;font-size:.9rem}
-.language-links a[aria-current="page"] {color:var(--hero-ink);text-decoration:underline;text-underline-offset:.25em}
-html[lang="fa"] body {font-family:Tahoma,Arial,sans-serif;line-height:1.75}
-html[lang="fa"] :is(h1,h2,h3,.eyebrow,.brand,.hero-role) {font-family:Tahoma,Arial,sans-serif;letter-spacing:normal;line-height:1.5}
-html[dir="rtl"] .track small {margin-left:0;margin-inline-start:auto;direction:ltr}
-html[dir="rtl"] .waveform, html[dir="rtl"] audio {direction:ltr}
-html[dir="rtl"] .mast .brand {margin-right:0;margin-inline-end:auto}
-html[dir="rtl"] .cv-role {padding-left:0;border-left:0;border-inline-start:2px solid var(--rule-strong);padding-inline-start:1.1rem}
-@media(min-width:46.01rem) and (max-width:70rem){.mast{flex-wrap:wrap;gap:.5rem 1rem;padding-block:.4rem}.site-nav{flex-wrap:wrap;gap:.75rem}}
