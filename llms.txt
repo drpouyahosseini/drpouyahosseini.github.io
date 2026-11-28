@@ -1,6 +1,6 @@
-# Dr. Pouya Hosseini
+# Pouya Hosseini
 
-> Independent academic and creative portfolio. The primary author is Dr. Pouya Hosseini. Affiliated institutions do not endorse independent projects.
+> Independent academic and creative portfolio. The primary author is Pouya Hosseini. Affiliated institutions do not endorse independent projects.
 
 - [Home](https://drpouyahosseini.github.io/)
 - [Research](https://drpouyahosseini.github.io/research.html)
