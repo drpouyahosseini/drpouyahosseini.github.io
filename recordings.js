@@ -77,18 +77,6 @@ for (const track of tracks) {
   });
 }
 selectTrack(tracks[0]);
-const trackNav = document.createElement('div');
-trackNav.className = 'track-navigation';
-for (const [label, offset] of [['Previous track', -1], ['Next track', 1]]) {
-  const button = document.createElement('button');
-  button.type = 'button'; button.className = 'button'; button.textContent = label;
-  button.addEventListener('click', () => {
-    const index = (tracks.indexOf(currentTrack) + offset + tracks.length) % tracks.length;
-    playTrack(tracks[index]);
-  });
-  trackNav.append(button);
-}
-player.after(trackNav);
 
 player.addEventListener('play', () => {
   message.hidden = true;
