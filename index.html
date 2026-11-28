@@ -49,7 +49,7 @@
       "@id": "https://drpouyahosseini.github.io/#pouya",
       "name": "Pouya Hosseini",
       "url": "https://drpouyahosseini.github.io/",
-      "description": "I am an electrochemist and materials scientist specializing in X-ray photoelectron spectroscopy (XPS), electrochemical interfaces, electrocatalysis and surface-sensitive characterization of functional materials. I am a Research Scientist at the Max Planck Institute for Sustainable Materials in Düsseldorf. Independently, I develop interactive music-theory applications and compose and perform Persian music on setar and santur.",
+      "description": "I am an electrochemist and materials scientist specializing in X-ray photoelectron spectroscopy (XPS), electrochemical interfaces, electrocatalysis and surface-sensitive characterization of functional materials. My Research Scientist appointment at the Max Planck Institute for Sustainable Materials in Düsseldorf begins on 1 December 2026. Independently, I develop interactive music-theory applications and compose and perform Persian music on setar and santur.",
       "knowsAbout": [
         "Electrocatalysis",
         "Surface science",
@@ -89,7 +89,24 @@
         "@type": "Organization",
         "name": "Max Planck Institute for Sustainable Materials",
         "url": "https://www.mpie.de/"
-      }
+      },
+      "subjectOf": [
+        {
+          "@id": "https://persianmusicscales.github.io/Persian-Music-Scales-App/#app"
+        },
+        {
+          "@id": "https://persianmusicscales.github.io/urmawi-advar-atlas/#app"
+        },
+        {
+          "@id": "https://worldmusicscalesatlas.github.io/#app"
+        },
+        {
+          "@id": "https://drpouyahosseini.github.io/cv.html#page"
+        },
+        {
+          "@id": "https://drpouyahosseini.github.io/research.html#page"
+        }
+      ]
     },
     {
       "@type": "WebSite",
@@ -114,7 +131,10 @@
       "url": "https://persianmusicscales.github.io/Persian-Music-Scales-App/",
       "creator": {
         "@id": "https://drpouyahosseini.github.io/#pouya"
-      }
+      },
+      "@id": "https://persianmusicscales.github.io/Persian-Music-Scales-App/#app",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web browser"
     },
     {
       "@type": "WebApplication",
@@ -122,6 +142,50 @@
       "url": "https://persianmusicscales.github.io/urmawi-advar-atlas/",
       "creator": {
         "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "@id": "https://persianmusicscales.github.io/urmawi-advar-atlas/#app",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web browser"
+    },
+    {
+      "@type": "WebApplication",
+      "@id": "https://worldmusicscalesatlas.github.io/#app",
+      "name": "World Music Scales Atlas",
+      "url": "https://worldmusicscalesatlas.github.io/",
+      "creator": {
+        "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web browser"
+    },
+    {
+      "@type": "MusicRecording",
+      "@id": "https://drpouyahosseini.github.io/#esfahan-waltz",
+      "name": "Esfahan Waltz",
+      "byArtist": {
+        "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "duration": "PT3M17S",
+      "image": "https://drpouyahosseini.github.io/esfahan-waltz-cover.webp",
+      "audio": {
+        "@type": "AudioObject",
+        "contentUrl": "https://drpouyahosseini.github.io/esfahan-waltz.mp3",
+        "encodingFormat": "audio/mpeg"
+      }
+    },
+    {
+      "@type": "MusicRecording",
+      "@id": "https://drpouyahosseini.github.io/#delangiz",
+      "name": "Reverie",
+      "byArtist": {
+        "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "duration": "PT2M42S",
+      "image": "https://drpouyahosseini.github.io/reverie-cover.png",
+      "audio": {
+        "@type": "AudioObject",
+        "contentUrl": "https://drpouyahosseini.github.io/delangiz.mp3",
+        "encodingFormat": "audio/mpeg"
       }
     },
     {
@@ -171,42 +235,198 @@
     },
     {
       "@type": "MusicRecording",
-      "@id": "https://drpouyahosseini.github.io/#delangiz",
-      "name": "Reverie",
+      "@id": "https://drpouyahosseini.github.io/#delbar",
+      "name": "Delbar",
       "byArtist": {
         "@id": "https://drpouyahosseini.github.io/#pouya"
       },
-      "duration": "PT2M42S",
-      "image": "https://drpouyahosseini.github.io/reverie-cover.png",
+      "duration": "PT2M49S",
+      "image": "https://drpouyahosseini.github.io/delbar-cover.webp",
       "audio": {
         "@type": "AudioObject",
-        "contentUrl": "https://drpouyahosseini.github.io/delangiz.mp3",
+        "contentUrl": "https://drpouyahosseini.github.io/delbar.mp3",
         "encodingFormat": "audio/mpeg"
       }
     },
     {
-      "@type": "WebApplication",
-      "@id": "https://worldmusicscalesatlas.github.io/#app",
-      "name": "World Music Scales Atlas",
-      "url": "https://worldmusicscalesatlas.github.io/",
-      "creator": {
+      "@type": "MusicRecording",
+      "@id": "https://drpouyahosseini.github.io/#khater",
+      "name": "Khater",
+      "byArtist": {
         "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "duration": "PT2M23S",
+      "image": "https://drpouyahosseini.github.io/khater-cover.webp",
+      "audio": {
+        "@type": "AudioObject",
+        "contentUrl": "https://drpouyahosseini.github.io/khater.mp3",
+        "encodingFormat": "audio/mpeg"
+      }
+    },
+    {
+      "@type": "MusicRecording",
+      "@id": "https://drpouyahosseini.github.io/#poshte-pardeha",
+      "name": "Poshte Pardeha",
+      "byArtist": {
+        "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "duration": "PT2M23S",
+      "image": "https://drpouyahosseini.github.io/poshte-pardeha-cover.webp",
+      "audio": {
+        "@type": "AudioObject",
+        "contentUrl": "https://drpouyahosseini.github.io/poshte-pardeha.mp3",
+        "encodingFormat": "audio/mpeg"
+      }
+    },
+    {
+      "@type": "MusicRecording",
+      "@id": "https://drpouyahosseini.github.io/#besoozad",
+      "name": "Besoozad",
+      "byArtist": {
+        "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "duration": "PT3M49S",
+      "image": "https://drpouyahosseini.github.io/besoozad-cover.webp",
+      "audio": {
+        "@type": "AudioObject",
+        "contentUrl": "https://drpouyahosseini.github.io/besoozad.mp3",
+        "encodingFormat": "audio/mpeg"
+      }
+    },
+    {
+      "@type": "MusicRecording",
+      "@id": "https://drpouyahosseini.github.io/#reside-am",
+      "name": "Resideh Am Be Raftanam",
+      "byArtist": {
+        "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "duration": "PT2M37S",
+      "image": "https://drpouyahosseini.github.io/reside-am-cover.webp",
+      "audio": {
+        "@type": "AudioObject",
+        "contentUrl": "https://drpouyahosseini.github.io/reside-am.mp3",
+        "encodingFormat": "audio/mpeg"
+      }
+    },
+    {
+      "@type": "MusicRecording",
+      "@id": "https://drpouyahosseini.github.io/#raft",
+      "name": "Raft",
+      "byArtist": {
+        "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "duration": "PT2M54S",
+      "image": "https://drpouyahosseini.github.io/raft-cover.webp",
+      "audio": {
+        "@type": "AudioObject",
+        "contentUrl": "https://drpouyahosseini.github.io/raft.mp3",
+        "encodingFormat": "audio/mpeg"
+      }
+    },
+    {
+      "@type": "MusicRecording",
+      "@id": "https://drpouyahosseini.github.io/#aimlessly",
+      "name": "Aimlessly",
+      "byArtist": {
+        "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "duration": "PT2M22S",
+      "image": "https://drpouyahosseini.github.io/aimlessly-cover.webp",
+      "audio": {
+        "@type": "AudioObject",
+        "contentUrl": "https://drpouyahosseini.github.io/aimlessly.mp3",
+        "encodingFormat": "audio/mpeg"
+      }
+    },
+    {
+      "@type": "MusicRecording",
+      "@id": "https://drpouyahosseini.github.io/#beauty",
+      "name": "Beauty",
+      "byArtist": {
+        "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "duration": "PT2M22S",
+      "image": "https://drpouyahosseini.github.io/beauty-cover.webp",
+      "audio": {
+        "@type": "AudioObject",
+        "contentUrl": "https://drpouyahosseini.github.io/beauty.mp3",
+        "encodingFormat": "audio/mpeg"
+      }
+    },
+    {
+      "@type": "MusicRecording",
+      "@id": "https://drpouyahosseini.github.io/#bittersweet",
+      "name": "Bittersweet",
+      "byArtist": {
+        "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "duration": "PT4M12S",
+      "image": "https://drpouyahosseini.github.io/bittersweet-cover.webp",
+      "audio": {
+        "@type": "AudioObject",
+        "contentUrl": "https://drpouyahosseini.github.io/bittersweet.mp3",
+        "encodingFormat": "audio/mpeg"
+      }
+    },
+    {
+      "@type": "MusicRecording",
+      "@id": "https://drpouyahosseini.github.io/#simplicity",
+      "name": "Simplicity",
+      "byArtist": {
+        "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "duration": "PT2M8S",
+      "image": "https://drpouyahosseini.github.io/simplicity-cover.webp",
+      "audio": {
+        "@type": "AudioObject",
+        "contentUrl": "https://drpouyahosseini.github.io/simplicity.mp3",
+        "encodingFormat": "audio/mpeg"
+      }
+    },
+    {
+      "@type": "MusicRecording",
+      "@id": "https://drpouyahosseini.github.io/#the-way",
+      "name": "The Way",
+      "byArtist": {
+        "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "duration": "PT3M19S",
+      "image": "https://drpouyahosseini.github.io/the-way-cover.webp",
+      "audio": {
+        "@type": "AudioObject",
+        "contentUrl": "https://drpouyahosseini.github.io/the-way.mp3",
+        "encodingFormat": "audio/mpeg"
+      }
+    },
+    {
+      "@type": "MusicRecording",
+      "@id": "https://drpouyahosseini.github.io/#unburden",
+      "name": "Unburden",
+      "byArtist": {
+        "@id": "https://drpouyahosseini.github.io/#pouya"
+      },
+      "duration": "PT3M8S",
+      "image": "https://drpouyahosseini.github.io/unburden-cover.webp",
+      "audio": {
+        "@type": "AudioObject",
+        "contentUrl": "https://drpouyahosseini.github.io/unburden.mp3",
+        "encodingFormat": "audio/mpeg"
       }
     }
   ]
 }
 </script>
 <link rel="stylesheet" href="cv.css?v=20261128-profile" id="cv-styles" media="not all">
-<script defer src="recordings.js?v=20261128-profile"></script>
+<script defer src="recordings.js?v=20261128-upgrade"></script>
 <script defer src="portfolio-nav.js?v=20261128-profile"></script>
 
-</head>
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Dr. Pouya Hosseini | Electrochemist &amp; Materials Scientist"><meta name="twitter:description" content="Electrochemist, XPS specialist and materials scientist at the Max Planck Institute for Sustainable Materials. Research, publications, independent apps and Persian music."><meta name="twitter:image" content="https://drpouyahosseini.github.io/pouya-hosseini-940.webp"><link rel="stylesheet" href="portfolio-upgrade.css?v=20261128-1"><script defer src="portfolio-enhancements.js?v=20261128-1"></script></head>
 <body id="top">
 <a class="skip" href="#main">Skip to content</a>
 <div class="nav-band">
   <header class="mast wrap">
     <a class="brand" href="#top" aria-label="Pouya Hosseini, homepage">
-      <img class="brand-mark" src="pouya-mark.webp" style="border-radius:22%;object-fit:contain" alt="" width="41" height="41"><span>Pouya Hosseini</span>
+      <img class="brand-mark" src="pouya-mark.webp" style="border-radius:22%;object-fit:contain" alt="" width="41" height="41"><span>Dr. Pouya Hosseini</span>
     </a>
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" hidden>
       <span class="menu-glyph" aria-hidden="true"></span><span>Menu</span>
@@ -225,7 +445,7 @@
   <section class="hero wrap" id="pouya" aria-labelledby="name">
     <div class="hero-copy">
       <p class="eyebrow hero-role">Electrochemist · Surface Scientist · Materials Scientist</p>
-      <h1 id="name">Dr. Pouya <em>Hosseini</em></h1><p class="affiliation">Research Scientist<span>Max Planck Institute for Sustainable Materials · Düsseldorf, Germany</span></p>
+      <h1 id="name">Dr. Pouya <em>Hosseini</em></h1><p class="affiliation">Research Scientist<span>Max Planck Institute for Sustainable Materials · Düsseldorf, Germany</span><span class="appointment-date">Appointment from 1 December 2026</span></p>
       <p class="intro">My research focuses on X-ray photoelectron spectroscopy (XPS), electrochemical interfaces, electrocatalysis and functional materials. Independently, I develop music-theory applications and perform Persian music.</p>
       <div class="actions hero-actions"><a class="button primary" href="#research">Explore research</a><a class="button" href="cv.html">Academic CV</a><a class="button" href="#projects">Independent projects</a></div>
       <div class="profiles" aria-label="Professional profiles"><a href="https://scholar.google.com/citations?user=VgER-GUAAAAJ"><span class="service-icon brand-googlescholar" aria-hidden="true"></span>Google Scholar</a> <a href="https://www.researchgate.net/profile/Pouya-Hosseini"><span class="service-icon brand-researchgate" aria-hidden="true"></span>ResearchGate</a>
@@ -238,6 +458,15 @@
   </section>
 </div>
 <main id="main">
+<section class="portfolio-directory wrap" aria-labelledby="directory-title">
+  <div class="directory-heading"><p class="eyebrow">Explore my work</p><h2 id="directory-title">Science, software and music</h2><p>One personal portfolio, with distinct spaces for academic research and independent creative work.</p></div>
+  <div class="directory-grid">
+    <a href="research.html"><span class="directory-number" aria-hidden="true">01</span><strong>Research &amp; XPS</strong><span>Electrochemical interfaces, spectroscopy and functional materials</span><span class="directory-link">Research portfolio →</span></a>
+    <a href="publications.html"><span class="directory-number" aria-hidden="true">02</span><strong>Publications</strong><span>Scientific papers, preprints and research contributions</span><span class="directory-link">Search bibliography →</span></a>
+    <a href="projects.html"><span class="directory-number" aria-hidden="true">03</span><strong>Independent software</strong><span>Three interactive music-theory applications</span><span class="directory-link">Explore applications →</span></a>
+    <a href="music.html"><span class="directory-number" aria-hidden="true">04</span><strong>Music</strong><span>Persian music, compositions and recordings</span><span class="directory-link">Visit listening room →</span></a>
+  </div>
+</section>
   <section id="research" class="section wrap" aria-labelledby="research-title">
     <div class="section-lead research-opening">
       <div><p class="eyebrow">Research</p><h2 id="research-title">Electrochemical interfaces and functional materials</h2></div>
@@ -390,7 +619,7 @@
   <section id="about" class="section wrap about" aria-labelledby="about-title">
     <figure class="about-photo"><img src="pouya-portrait-640.webp" srcset="pouya-portrait-640.webp 640w, pouya-portrait-1200.webp 1200w" sizes="(max-width:40rem) 55vw, 235px" width="640" height="640" alt="Pouya in sunlight" loading="lazy"></figure>
     <div><p class="eyebrow">About &amp; contact</p><h2 id="about-title">Pouya Hosseini</h2>
-      <p>I am an electrochemist and materials scientist specializing in X-ray photoelectron spectroscopy (XPS), electrochemical interfaces, electrocatalysis and surface-sensitive characterization of functional materials. I am a Research Scientist at the Max Planck Institute for Sustainable Materials in Düsseldorf. Independently, I develop interactive music-theory applications and compose and perform Persian music on setar and santur. My independent applications are the Persian Music Scales App, Urmawī Advar Atlas and World Music Scales Atlas.</p><p><a href="research.html#xps-expertise">XPS and surface analysis expertise</a></p>
+      <p>I am an electrochemist and materials scientist specializing in X-ray photoelectron spectroscopy (XPS), electrochemical interfaces, electrocatalysis and surface-sensitive characterization of functional materials. My Research Scientist appointment at the Max Planck Institute for Sustainable Materials in Düsseldorf begins on 1 December 2026. Independently, I develop interactive music-theory applications and compose and perform Persian music on setar and santur. My independent applications are the Persian Music Scales App, Urmawī Advar Atlas and World Music Scales Atlas.</p><p><a href="research.html#xps-expertise">XPS and surface analysis expertise</a></p>
       <div class="links"><a href="https://www.linkedin.com/in/drpouyahosseini/"><span aria-hidden="true" class="service-icon brand-linkedin"></span>Contact on LinkedIn</a><a href="https://www.mpie.de/en"><span aria-hidden="true" class="service-icon brand-institute"></span>Max Planck Institute</a><a href="cv.html">Curriculum vitae</a><a href="about.html">Contact &amp; biography</a></div></div>
   </section>
 </main>
@@ -398,7 +627,7 @@
   <img alt="" width="44" height="44"><a href="./#recordings"><small>Selected recording</small><strong dir="auto"></strong></a>
   <button type="button" aria-label="Pause recording"></button>
 </aside>
-<footer class="footer wrap revision-footer"><div><strong>Dr. Pouya Hosseini</strong><small>© 2026 Pouya Hosseini. Original content only; third-party rights are respected.</small><small>Independent personal website. Personal projects do not imply institutional endorsement.</small></div><div class="footer-links"><a href="legal.html">Privacy &amp; rights</a><a href="about.html">Contact</a><a href="#top">Back to top</a></div></footer>
+<footer class="footer wrap revision-footer"><div><strong>Dr. Pouya Hosseini</strong><small>© 2026 Pouya Hosseini. Original content only; third-party rights are respected.</small><small>Independent personal website. Personal projects do not imply institutional endorsement.</small></div><div class="footer-links"><a href="research.html">Research</a><a href="publications.html">Publications</a><a href="projects.html">Projects</a><a href="music.html">Music</a><a href="legal.html">Privacy &amp; rights</a><a href="about.html">Contact</a><a href="#top">Back to top</a></div></footer>
 <dialog id="share-dialog" aria-labelledby="share-title">
   <h2 id="share-title">Share this page</h2>
   <label for="share-url">Page link</label><input id="share-url" type="url" readonly>
