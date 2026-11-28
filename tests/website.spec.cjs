@@ -153,3 +153,19 @@ test('CV omits the redundant independent project link', async ({page}) => {
   await page.goto('/cv.html');
   await expect(page.getByText('Persian Music Scales Visualization', {exact:true})).toHaveCount(0);
 });
+
+
+test('mobile introduction omits decorative dash and redundant XPS link', async ({page}) => {
+  for (const width of [320, 390]) {
+    await page.setViewportSize({width, height: 900});
+    await page.goto('/');
+    await expect(page.locator('#name')).toHaveText('Pouya Hosseini');
+    expect(await page.locator('.hero-role').evaluate(el => getComputedStyle(el, '::before').display)).toBe('none');
+    await expect(page.locator('#about a[href="research.html#xps-expertise"]')).toHaveCount(0);
+    await expect(page.locator('#xps-expertise')).toBeVisible();
+    await expect(page.locator('#about .links a')).toHaveCount(4);
+    await page.goto('/about.html');
+    await expect(page.locator('#about a[href="research.html#xps-expertise"]')).toHaveCount(0);
+    await expect(page.locator('#about .links a')).toHaveCount(3);
+  }
+});
