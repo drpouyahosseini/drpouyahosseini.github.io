@@ -97,7 +97,7 @@ if ('IntersectionObserver' in window) {
 }
 
 const portrait = document.querySelector('.hero-art .portrait');
-if (portrait) {
+if (portrait?.querySelector(".portrait-toggle")) {
   const images = [...portrait.querySelectorAll('img')];
   let active = 0;
   const toggle = portrait.querySelector('.portrait-toggle');
