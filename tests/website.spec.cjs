@@ -57,12 +57,12 @@ test('Reverie retains the existing audio and displays its new artwork', async ({
     const track=page.locator('#delangiz');
     await expect(track).toContainText('Reverie');
     await expect(track).toHaveAttribute('href','delangiz.mp3');
-    await expect(track).toHaveAttribute('data-cover','reverie-cover.webp');
+    await expect(track).toHaveAttribute('data-cover','reverie-cover.png');
     await page.evaluate(()=>{HTMLMediaElement.prototype.play=()=>Promise.resolve();});
     await track.click();
     await expect(page.locator('#current-track')).toHaveText('Reverie');
-    await expect(page.locator('#track-cover')).toHaveAttribute('src','reverie-cover.webp');
-    await expect.poll(()=>page.locator('#track-cover').evaluate(el=>el.complete&&el.naturalWidth===400&&el.naturalHeight===400)).toBe(true);
+    await expect(page.locator('#track-cover')).toHaveAttribute('src','reverie-cover.png');
+    await expect.poll(()=>page.locator('#track-cover').evaluate(el=>el.complete&&el.naturalWidth===2048&&el.naturalHeight===2048)).toBe(true);
     await expect(page.locator('#player')).toHaveAttribute('src', /delangiz\.mp3$/);
   }
 });
