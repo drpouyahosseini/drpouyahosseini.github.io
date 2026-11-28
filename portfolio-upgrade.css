@@ -1,6 +1,5 @@
 /* Coordinated personal-portfolio refinements; retain established palette and typography. */
 .brand-mark{border-radius:22%;object-fit:contain}
-.appointment-date{font-size:.84rem!important;opacity:.92}
 .hero .hero-copy .intro{max-width:56ch}
 .portfolio-directory{padding-block:clamp(2rem,4vw,3.5rem);border-bottom:1px solid var(--rule)}
 .directory-heading{display:grid;grid-template-columns:1fr;gap:.45rem;margin-bottom:1.25rem}
