@@ -17,7 +17,7 @@ test('all pages load without page errors and fit mobile viewport', async ({page}
 });
 test('publications are displayed in a clean chronological bibliography', async ({page}) => {
   await page.goto('/publications.html');
-  await expect(page.locator('.publication-controls')).toBeVisible();
+  await expect(page.locator('.publication-controls')).toHaveCount(0);
   await expect(page.locator('#bibliography .venue')).toHaveCount(38);
   await expect(page.locator('#bibliography ol.bibliography > li').first()).toBeVisible();
 });
@@ -27,9 +27,8 @@ test('home navigation and recordings', async ({page}) => {
   await expect(page.locator('.affiliation')).toContainText('Max Planck Institute for Sustainable Materials');
   await expect(page.locator('.affiliation')).not.toContainText('effective');
   await expect(page.locator('.track')).toHaveCount(17);
-  await expect(page.locator('#player + select')).toHaveValue('stop');
-  await page.locator('#player + select').selectOption('shuffle');
-  await expect(page.locator('#player + select')).toHaveValue('shuffle');
+  await expect(page.getByLabel('Playback mode')).toHaveCount(0);
+  await expect(page.locator('#recording-query')).toHaveCount(0);
   await page.locator('.nav-cv').click();
   await expect(page.locator('.cv-intro h1')).toBeVisible();
   await page.goBack();
@@ -110,16 +109,12 @@ test('illustrated XPS showcase preserves the research identity and CV depth', as
   await expect(page.locator('.affiliation')).toContainText('Research Scientist');
 });
 
-test('portfolio directory, publication search and standalone navigation', async ({page}) => {
+test('portfolio directory, plain bibliography and standalone navigation', async ({page}) => {
   await page.goto('/');
   await expect(page.locator('.directory-grid a')).toHaveCount(4);
   await page.locator('.directory-grid a[href="publications.html"]').click();
-  await page.locator('#publication-year').selectOption('2026');
-  await expect(page.locator('#bibliography ol.bibliography:visible')).toHaveCount(1);
-  await page.locator('#publication-query').fill('no-such-publication-12345');
-  await expect(page.locator('#publication-count')).toContainText('No matching');
-  await page.locator('#publication-reset').click();
-  await expect(page.locator('#publication-count')).toHaveText('38 of 38 records');
+  await expect(page.locator('.publication-controls')).toHaveCount(0);
+  await expect(page.locator('#bibliography ol.bibliography > li:visible')).toHaveCount(38);
   await page.setViewportSize({width:320,height:800});
   await expect(page.locator('#standalone-menu')).toBeHidden();
   await page.locator('.standalone-toggle').click();
@@ -127,12 +122,10 @@ test('portfolio directory, publication search and standalone navigation', async 
   await page.keyboard.press('Escape');
   await expect(page.locator('#standalone-menu')).toBeHidden();
 });
-test('recording search and previous/next controls preserve audio assets', async ({page}) => {
+test('simple recording list and previous/next controls preserve audio assets', async ({page}) => {
   await page.goto('/music.html');
-  await page.locator('#recording-query').fill('Reverie');
-  await expect(page.locator('.track:visible')).toHaveCount(1);
-  await expect(page.locator('.track:visible')).toContainText('Reverie');
-  await page.locator('#recording-query').fill('');
+  await expect(page.locator('#recording-query')).toHaveCount(0);
+  await expect(page.getByLabel('Playback mode')).toHaveCount(0);
   await expect(page.locator('.track:visible')).toHaveCount(17);
   await page.evaluate(()=>{HTMLMediaElement.prototype.play=()=>Promise.resolve();});
   await page.getByRole('button',{name:'Next track',exact:true}).click();
@@ -150,4 +143,9 @@ test('structured portfolio metadata contains all 17 recordings and three apps', 
     await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content','summary_large_image');
     expect(await page.locator('script[type="application/ld+json"]').evaluate(el=>JSON.parse(el.textContent).url)).toBe('https://drpouyahosseini.github.io'+path);
   }
+});
+
+test('CV omits the redundant independent project link', async ({page}) => {
+  await page.goto('/cv.html');
+  await expect(page.getByText('Persian Music Scales Visualization', {exact:true})).toHaveCount(0);
 });
