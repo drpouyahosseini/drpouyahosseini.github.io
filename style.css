@@ -470,3 +470,40 @@ html:has(#figure-viewer[open]) {overflow:hidden;scrollbar-gutter:stable}
   .world-atlas-feature { grid-template-columns: 1fr; }
   .world-atlas-feature .world-atlas-emblem { width: 4.75rem; }
 }
+
+/* Inline research disclosures and persistent recording controls. */
+.research-grid{align-items:start}
+.method-disclosure{width:100%;min-width:0}
+.method-disclosure .method-link{cursor:pointer;list-style:none;min-height:15rem;grid-template-rows:auto auto 1fr auto}
+.method-disclosure summary::-webkit-details-marker,.xps-inline summary::-webkit-details-marker{display:none}
+.method-title{display:block;font:400 clamp(1.65rem,2.4vw,2rem)/1.12 var(--serif);margin:1rem 0 .55rem}
+.method-description{display:block;color:var(--body);line-height:1.55}
+.method-action{display:flex;align-items:center;gap:.45rem}
+.method-action::after,.xps-inline summary::after{content:"";width:.55em;height:.55em;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);margin:0 .2em .25em}
+.method-disclosure[open] .method-action::after,.xps-inline[open] summary::after{transform:rotate(225deg);margin-bottom:-.2em}
+.method-disclosure[open] .method-link{border-radius:.14rem .14rem 0 0}
+.method-disclosure:not([open]) .when-open,.method-disclosure[open] .when-closed,.xps-inline:not([open]) .when-open,.xps-inline[open] .when-closed{display:none}
+.method-papers{padding:.3rem 1rem 1rem;border:1px solid var(--rule);border-top:0;border-radius:0 0 var(--radius) var(--radius);background:var(--panel);overflow-wrap:anywhere}
+.method-papers .paper{display:block;padding:1rem 0;border-bottom:1px solid var(--rule);min-width:0}
+.method-papers .paper:last-child{border-bottom:0}
+.method-papers .paper-meta{display:flex;flex-wrap:wrap;gap:.3rem .6rem;align-items:baseline;margin-bottom:.5rem}
+.method-papers .paper-meta p{margin:0}
+.method-papers .paper-body h3{font-size:1.2rem;line-height:1.35;margin:.35rem 0}
+.method-papers .paper-body p{font-size:.92rem;margin:.5rem 0}
+.method-papers .paper-doi{display:inline-flex;margin-top:.35rem}
+.xps-inline{margin-top:.75rem}
+.xps-inline summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:.55rem}
+.xps-inline ul{padding-left:1.2rem;margin:.8rem 0;line-height:1.6}
+.recording-controls{display:flex;flex-direction:column;gap:.65rem;width:100%;min-width:0}
+.recording-control-row{display:flex;align-items:center;flex-wrap:wrap;gap:.55rem}
+.recording-controls button{min-height:44px}
+.recording-controls input[type=range]{accent-color:var(--accent);min-width:0;width:100%;cursor:pointer}
+.recording-time{font-variant-numeric:tabular-nums;font-size:.85rem}
+.recording-volume{display:flex;align-items:center;gap:.4rem;font-size:.8rem;flex:1;min-width:7rem}
+.recording-volume input{max-width:7rem}
+.shuffle-toggle[aria-pressed=true]{background:var(--tint);border-color:var(--accent);color:var(--accent)}
+.mini-player .mini-shuffle{width:auto;min-width:44px;padding:0 .6rem;border-radius:.5rem;font-size:.8rem}
+.mini-player .mini-shuffle[aria-pressed=false]{opacity:.65}
+.mini-player a{min-width:0;overflow-wrap:anywhere}
+@media(max-width:46rem){.method-disclosure .method-link{min-height:0;grid-template-rows:auto auto auto}.method-title,.method-description,.method-action{grid-column:2}.method-title{margin:0;font-size:1.6rem}.method-papers{padding-inline:.85rem}.mini-player{gap:.4rem}}
+@media(max-width:28rem){.mini-player .mini-shuffle{padding:0 .35rem;min-width:40px}.mini-player img{width:36px;height:36px}}
