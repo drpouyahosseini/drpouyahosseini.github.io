@@ -1,0 +1,20 @@
+# Dr. Pouya Hosseini
+
+> Independent academic and creative portfolio. The primary author is Dr. Pouya Hosseini. Affiliated institutions do not endorse independent projects.
+
+- [Home](https://drpouyahosseini.github.io/)
+- [Research](https://drpouyahosseini.github.io/research.html)
+- [Publications](https://drpouyahosseini.github.io/publications.html)
+- [CV](https://drpouyahosseini.github.io/cv.html)
+- [Projects](https://drpouyahosseini.github.io/projects.html)
+- [Music](https://drpouyahosseini.github.io/music.html)
+- [About and contact](https://drpouyahosseini.github.io/about.html)
+- [Privacy and rights](https://drpouyahosseini.github.io/legal.html)
+- [Sitemap](https://drpouyahosseini.github.io/sitemap.xml)
+
+## Related projects
+
+- [Persian Music Scales](https://persianmusicscales.github.io/)
+- [Persian Music Scales App](https://persianmusicscales.github.io/Persian-Music-Scales-App/)
+- [Urmawī Advar Atlas](https://persianmusicscales.github.io/urmawi-advar-atlas/)
+- [World Music Scales Atlas](https://worldmusicscalesatlas.github.io/)
