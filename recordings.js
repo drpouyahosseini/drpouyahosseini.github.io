@@ -21,6 +21,14 @@
   audio.hidden = true;
   document.body.append(audio, mini);
   audio.id = 'persistent-recording-audio';
+  // iOS uses device volume; don't display a nonfunctional software slider.
+  let supportsVolume = false;
+  try {
+    const original = audio.volume;
+    audio.volume = original === 0.5 ? 0.6 : 0.5;
+    supportsVolume = audio.volume !== original;
+    audio.volume = original;
+  } catch {}
   function time(seconds) {
     if (!Number.isFinite(seconds)) return '0:00';
     return Math.floor(seconds / 60) + ':' + String(Math.floor(seconds % 60)).padStart(2, '0');
@@ -136,6 +144,7 @@
       state: room.querySelector('#play-state'), cover: room.querySelector('#track-cover'),
       caption: room.querySelector('#current-track'), waveform: room.querySelector('.waveform'),
       note: room.querySelector('#esfahan-note'), message: room.querySelector('#play-message'), bars: [] };
+    view.volume.closest('label').hidden = !supportsVolume;
     view.play.addEventListener('click', toggle);
     view.shuffle.addEventListener('click', toggleShuffle);
     view.seek.addEventListener('input', () => { if (Number.isFinite(audio.duration)) audio.currentTime = Number(view.seek.value); });
