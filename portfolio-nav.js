@@ -175,7 +175,13 @@
     pending?.abort();
     pending = new AbortController();
     try {
-      if (path(url) === displayed) { position(url, restore); return; }
+      if (path(url) === displayed) {
+        if (push && url.href !== location.href) {
+          history.replaceState({...history.state, portfolioScroll: scrollY}, '', location.href);
+          history.pushState({portfolioScroll: 0}, '', url.href);
+        }
+        position(url, restore); return;
+      }
       const doc = await load(url, pending.signal);
       if (id !== requestId) return;
       if (push) {
@@ -193,14 +199,23 @@
     if (!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
     const url = new URL(link.href);
     if (url.origin !== location.origin || !allowed.has(url.pathname)) return;
-    if (path(url) === displayed && url.hash) {
+    if (path(url) === displayed && url.pathname === location.pathname && url.hash) {
       // Preserve native same-page anchors; also allow inbound links to closed disclosures.
       ++requestId; pending?.abort(); openAnchor(url.hash); return;
     }
     e.preventDefault();
     navigate(url, true);
   });
-  window.addEventListener('popstate', e => navigate(new URL(location.href), false, e.state?.portfolioScroll));
+  window.addEventListener('popstate', e => {
+    const url = new URL(location.href);
+    if (path(url) === displayed) {
+      ++requestId; pending?.abort();
+      openAnchor(url.hash);
+      // The browser restores scroll for native same-page history.
+      return;
+    }
+    navigate(url, false, e.state?.portfolioScroll);
+  });
   window.addEventListener('hashchange', () => openAnchor(location.hash));
   let scheduled = false;
   window.addEventListener('scroll', () => {
