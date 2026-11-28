@@ -1,101 +1,213 @@
-// Keep the homepage audio element mounted while reading the CV in this tab.
-const homeMain = document.querySelector('main');
-const homeHero = document.querySelector('.hero');
-const homeTitle = document.title;
-const cvURL = new URL('cv.html', location.href);
-const homeURL = new URL('./', location.href);
-const cvLink = navigation.querySelector('.nav-cv');
-const homeLinks = [...navigation.querySelectorAll('a[href^="#"]')];
-const sectionsByLink = homeLinks.map(link => document.querySelector(link.hash));
-const miniLink = mini.querySelector('a');
-const cvStyles = document.querySelector('#cv-styles');
-let cvContent;
-let cvRequest;
-let navigationVersion = 0;
-
-async function prepareCV() {
-  const response = await fetch(cvURL.pathname + '?v=20261128-profile');
-  if (!response.ok) throw new Error('CV unavailable');
-  const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
-  const hero = doc.querySelector('.cv-intro');
-  const main = doc.querySelector('main');
-  if (!hero || !main) throw new Error('Incomplete CV');
-  main.id = 'cv-main';
-  hero.hidden = main.hidden = true;
-  homeHero.after(hero);
-  homeMain.after(main);
-  const script = document.createElement('script');
-  script.src = 'cv.js';
-  document.head.append(script);
-  return { hero, main, title: doc.title };
-}
-
-function updateNav() {
-  const onCV = document.body.classList.contains('cv-page');
-  let active = onCV ? cvLink : null;
-  if (!onCV) {
-    sectionsByLink.forEach((section, index) => {
-      if (section.getBoundingClientRect().top <= 120) active = homeLinks[index];
-    });
-    if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) active = homeLinks.at(-1);
+// Same-origin portfolio navigation: the recording audio and mini-player never leave the DOM.
+(() => {
+  const recording = window.portfolioRecording;
+  if (!recording) return;
+  const { audio, mini } = recording;
+  const allowed = new Set(['/', '/index.html', '/research.html', '/publications.html',
+    '/projects.html', '/music.html', '/about.html', '/cv.html', '/legal.html']);
+  const path = url => url.pathname === '/index.html' ? '/' : url.pathname;
+  let displayed = path(location), requestId = 0, pending, viewEvents;
+  const stylesheetKey = link => new URL(link.href, location.href).pathname;
+  const cache = new Map();
+  function openAnchor(hash) {
+    if (!hash) return null;
+    let id;
+    try { id = decodeURIComponent(hash.slice(1)); } catch { return null; }
+    const target = document.getElementById(id);
+    if (!target) return null;
+    for (let node = target; node; node = node.parentElement) {
+      if (node.tagName === 'DETAILS') node.open = true;
+    }
+    return target;
   }
-  for (const link of [...homeLinks, cvLink]) {
-    if (link === active) link.setAttribute('aria-current', onCV ? 'page' : 'location');
-    else link.removeAttribute('aria-current');
+  function showError() {
+    let notice = document.querySelector('.portfolio-route-error');
+    if (!notice) {
+      notice = document.createElement('p');
+      notice.className = 'portfolio-route-error'; notice.setAttribute('role', 'status');
+      document.querySelector('main')?.prepend(notice);
+    }
+    notice.textContent = 'This page could not be loaded. Please try the link again. Your recording is still available.';
   }
-  menu.querySelector('span:last-child').textContent = active === cvLink ? 'CV' : active?.textContent || 'Menu';
-}
-
-async function navigatePortfolio(url, push) {
-  const version = ++navigationVersion;
-  const onCV = url.pathname === cvURL.pathname;
-  if (onCV && !cvContent) {
-    try {
-      cvRequest ||= prepareCV();
-      cvContent = await cvRequest;
-    } catch {
-      if (version === navigationVersion) location.assign(url);
-      return;
+  async function load(url, signal) {
+    const key = path(url);
+    if (cache.has(key)) return cache.get(key);
+    const response = await fetch(url.pathname, { signal, credentials: 'same-origin' });
+    if (!response.ok) throw Error('Page unavailable');
+    const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+    if (!doc.querySelector('main') || !doc.querySelector('.nav-band')) throw Error('Incomplete page');
+    cache.set(key, doc);
+    return doc;
+  }
+  function applyHead(doc, url) {
+    document.title = doc.title;
+    const canonical = document.querySelector('link[rel=canonical]');
+    const destinationCanonical = doc.querySelector('link[rel=canonical]');
+    if (canonical) canonical.href = destinationCanonical?.getAttribute('href') || url.origin + url.pathname;
+    for (const prop of ['description', 'og:title', 'og:description', 'og:url', 'og:image', 'og:image:alt', 'twitter:title', 'twitter:description', 'twitter:image']) {
+      const selector = 'meta[' + (prop.startsWith('og:') ? 'property' : 'name') + '="' + prop + '"]';
+      const next = doc.querySelector(selector);
+      const old = document.querySelector(selector);
+      if (old && next) old.content = next.content;
+    }
+    // Preserve the newest shared CSS already loaded; switch page-specific styles by pathname.
+    const wanted = new Map([...doc.querySelectorAll('link[rel=stylesheet]')].map(link => [stylesheetKey(link), link]));
+    const active = new Map([...document.querySelectorAll('link[rel=stylesheet]')].map(link => [stylesheetKey(link), link]));
+    for (const [key, link] of active) {
+      link.media = wanted.has(key) ? wanted.get(key).media || 'all' : 'not all';
+    }
+    for (const [key, link] of wanted) if (!active.has(key)) document.head.append(document.importNode(link, true));
+  }
+  function initView() {
+    viewEvents?.abort();
+    viewEvents = new AbortController();
+    const options = { signal: viewEvents.signal };
+    const menu = document.querySelector('.menu-toggle, .standalone-toggle');
+    const nav = document.querySelector('.site-nav');
+    if (menu && nav) {
+      const narrow = matchMedia('(max-width:46rem)');
+      function setMenu(open) {
+        menu.setAttribute('aria-expanded', String(open));
+        nav.hidden = narrow.matches && !open;
+      }
+      const fit = () => { menu.hidden = !narrow.matches; setMenu(false); };
+      fit();
+      menu.addEventListener('click', () => setMenu(menu.getAttribute('aria-expanded') !== 'true'), options);
+      nav.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false); }, options);
+      document.addEventListener('keydown', e => { if (e.key === 'Escape' && menu.getAttribute('aria-expanded') === 'true') { setMenu(false); menu.focus(); } }, options);
+      narrow.addEventListener('change', fit, options);
+    }
+    const share = document.querySelector('.share-page'), dialog = document.querySelector('#share-dialog');
+    if (share && dialog) {
+      const input = dialog.querySelector('#share-url'), status = dialog.querySelector('#copy-status');
+      share.hidden = false;
+      share.addEventListener('click', async () => {
+        if (navigator.share) {
+          try { await navigator.share({ title: document.title, url: location.href }); return; }
+          catch (e) { if (e.name === 'AbortError') return; }
+        }
+        input.value = location.href; status.textContent = ''; dialog.showModal(); input.select();
+      }, options);
+      dialog.querySelector('#copy-url')?.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(input.value); status.textContent = 'Link copied.'; }
+        catch { input.select(); status.textContent = 'Select and copy the link above.'; }
+      }, options);
+      dialog.querySelector('#close-share')?.addEventListener('click', () => dialog.close(), options);
+    }
+    const figure = document.querySelector('#view-catalyst'), viewer = document.querySelector('#figure-viewer');
+    if (figure && viewer?.showModal) {
+      figure.setAttribute('aria-haspopup', 'dialog');
+      figure.addEventListener('click', e => {
+        if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+        e.preventDefault(); viewer.showModal();
+      }, options);
+      viewer.addEventListener('close', () => figure.focus({preventScroll:true}), options);
+      viewer.addEventListener('click', e => {
+        if (e.target !== viewer) return;
+        const box = viewer.getBoundingClientRect();
+        if (e.clientX < box.left || e.clientX > box.right || e.clientY < box.top || e.clientY > box.bottom) viewer.close();
+      }, options);
+    }
+    const print = document.querySelector('#print-cv');
+    if (print) { print.hidden = false; print.addEventListener('click', () => window.print(), options); }
+    const index = document.querySelector('.cv-index');
+    if (index) {
+      const compact = matchMedia('(max-width:48rem)');
+      const links = [...index.querySelectorAll('nav a')];
+      const fit = () => { index.open = !compact.matches; };
+      const update = () => {
+        let active = links[0];
+        for (const link of links) {
+          const section = document.getElementById(link.hash.slice(1));
+          if (section && section.getBoundingClientRect().top <= Math.min(160, innerHeight * .23)) active = link;
+        }
+        if (Math.ceil(scrollY + innerHeight) >= document.documentElement.scrollHeight - 1) active = links.at(-1);
+        for (const link of links) { if (link === active) link.setAttribute('aria-current','location'); else link.removeAttribute('aria-current'); }
+      };
+      fit(); update();
+      compact.addEventListener('change', fit, options);
+      index.addEventListener('click', e => { if (compact.matches && e.target.closest('a')) index.open = false; }, options);
+      window.addEventListener('scroll', update, { ...options, passive: true });
     }
   }
-  if (version !== navigationVersion) return;
-  if (push && location.href !== url.href) history.pushState(null, '', url);
-  homeHero.hidden = homeMain.hidden = onCV;
-  if (cvContent) cvContent.hero.hidden = cvContent.main.hidden = !onCV;
-  cvStyles.media = onCV ? 'all' : 'not all';
-  document.body.classList.toggle('cv-page', onCV);
-  document.title = onCV ? cvContent.title : homeTitle;
-  const canonical=document.querySelector('link[rel=canonical]');if(canonical)canonical.href=onCV?cvURL.href:homeURL.href;
-  for(const [property,value] of [['og:title',document.title],['og:url',onCV?cvURL.href:homeURL.href]]){const tag=document.querySelector('meta[property="'+property+'"]');if(tag)tag.content=value;}
-  document.querySelector('.skip').href = onCV ? '#cv-main' : '#main';
-  document.querySelector('.brand').href = homeURL;
-  homeLinks.forEach((link, index) => { link.href = homeURL.href + '#' + sectionsByLink[index].id; });
-  miniLink.href = homeURL.href + '#recordings';
-  setMenu(false);
-  const target = document.getElementById(url.hash.slice(1)) || (onCV ? cvContent.hero : homeHero);
-  if (url.hash) target.scrollIntoView();
-  else window.scrollTo({top: 0, behavior: 'instant'});
-  target.setAttribute('tabindex', '-1');
-  target.focus({preventScroll: true});
-  updateNav();
-}
-
-document.addEventListener('click', event => {
-  const link = event.target.closest('a[href]');
-  if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey || link.hasAttribute('download')) return;
-  const url = new URL(link.href);
-  if (url.origin !== location.origin) return;
-  if (link.target || ![cvURL.pathname, homeURL.pathname, homeURL.pathname + 'index.html'].includes(url.pathname)) return;
-  if (url.pathname === location.pathname && url.hash) return;
-  event.preventDefault();
-  navigatePortfolio(url, true);
-});
-window.addEventListener('popstate', () => navigatePortfolio(new URL(location.href), false));
-let pendingFrame = false;
-window.addEventListener('scroll', () => {
-  if (!pendingFrame) {
-    pendingFrame = true;
-    requestAnimationFrame(() => { pendingFrame = false; updateNav(); });
+  function updateHomeNav() {
+    if (displayed !== '/') return;
+    const nav = document.querySelector('#site-nav');
+    if (!nav) return;
+    const links = [...nav.querySelectorAll('a[href^="#"]')];
+    let active;
+    for (const link of links) {
+      const section = document.getElementById(link.hash.slice(1));
+      if (section?.getBoundingClientRect().top <= 120) active = link;
+    }
+    if (scrollY + innerHeight >= document.documentElement.scrollHeight - 2) active = links.at(-1);
+    for (const link of links) { if (link === active) link.setAttribute('aria-current','location'); else link.removeAttribute('aria-current'); }
+    const text = document.querySelector('.menu-toggle span:last-child');
+    if (text) text.textContent = active?.textContent || 'Menu';
   }
-}, {passive:true});
-updateNav();
+  function swap(doc, url) {
+    const fragment = document.createDocumentFragment();
+    for (const node of doc.body.children) {
+      if (node.matches('script, .mini-player, #persistent-recording-audio')) continue;
+      fragment.append(document.importNode(node, true));
+    }
+    // Never call replaceChildren on the body: it would detach the live audio element.
+    for (const node of [...document.body.childNodes]) if (node !== audio && node !== mini) node.remove();
+    document.body.className = doc.body.className;
+    document.body.id = doc.body.id || 'top';
+    document.body.insertBefore(fragment, audio);
+    displayed = path(url);
+    applyHead(doc, url);
+    initView();
+    recording.mount();
+  }
+  function position(url, restore) {
+    const target = openAnchor(url.hash);
+    if (target) target.scrollIntoView({behavior:'instant', block:'start'});
+    else window.scrollTo({top: restore ?? 0, behavior:'instant'});
+    if (target && !target.matches('a,button,input,summary')) {
+      target.setAttribute('tabindex','-1'); target.focus({preventScroll:true});
+    }
+    updateHomeNav();
+  }
+  async function navigate(url, push, restore) {
+    const id = ++requestId;
+    pending?.abort();
+    pending = new AbortController();
+    try {
+      if (path(url) === displayed) { position(url, restore); return; }
+      const doc = await load(url, pending.signal);
+      if (id !== requestId) return;
+      if (push) {
+        history.replaceState({...history.state, portfolioScroll: scrollY}, '', location.href);
+        history.pushState({portfolioScroll: 0}, '', url.href);
+      }
+      swap(doc, url);
+      position(url, restore);
+    } catch (error) {
+      if (id === requestId && error.name !== 'AbortError') showError();
+    }
+  }
+  document.addEventListener('click', e => {
+    const link = e.target.closest?.('a[href]');
+    if (!link || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.altKey || e.shiftKey || link.hasAttribute('download') || (link.target && link.target !== '_self')) return;
+    const url = new URL(link.href);
+    if (url.origin !== location.origin || !allowed.has(url.pathname)) return;
+    if (path(url) === displayed && url.hash) {
+      // Preserve native same-page anchors; also allow inbound links to closed disclosures.
+      ++requestId; pending?.abort(); openAnchor(url.hash); return;
+    }
+    e.preventDefault();
+    navigate(url, true);
+  });
+  window.addEventListener('popstate', e => navigate(new URL(location.href), false, e.state?.portfolioScroll));
+  window.addEventListener('hashchange', () => openAnchor(location.hash));
+  let scheduled = false;
+  window.addEventListener('scroll', () => {
+    if (!scheduled) {
+      scheduled = true; requestAnimationFrame(() => { scheduled = false; updateHomeNav(); });
+    }
+  }, {passive:true});
+  openAnchor(location.hash);
+  updateHomeNav();
+})();
