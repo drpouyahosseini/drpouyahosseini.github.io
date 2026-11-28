@@ -17,7 +17,7 @@ test('all pages load without page errors and fit mobile viewport', async ({page}
 });
 test('publications are displayed in a clean chronological bibliography', async ({page}) => {
   await page.goto('/publications.html');
-  await expect(page.locator('.publication-controls')).toHaveCount(0);
+  await expect(page.locator('.publication-controls')).toBeVisible();
   await expect(page.locator('#bibliography .venue')).toHaveCount(38);
   await expect(page.locator('#bibliography ol.bibliography > li').first()).toBeVisible();
 });
@@ -108,4 +108,46 @@ test('illustrated XPS showcase preserves the research identity and CV depth', as
   await expect(page.locator('#xps-expertise')).toContainText('vacuum troubleshooting');
   await expect(page.locator('#xps-expertise')).toContainText('multiplet splitting');
   await expect(page.locator('.affiliation')).toContainText('Research Scientist');
+});
+
+test('portfolio directory, publication search and standalone navigation', async ({page}) => {
+  await page.goto('/');
+  await expect(page.locator('.directory-grid a')).toHaveCount(4);
+  await page.locator('.directory-grid a[href="publications.html"]').click();
+  await page.locator('#publication-year').selectOption('2026');
+  await expect(page.locator('#bibliography ol.bibliography:visible')).toHaveCount(1);
+  await page.locator('#publication-query').fill('no-such-publication-12345');
+  await expect(page.locator('#publication-count')).toContainText('No matching');
+  await page.locator('#publication-reset').click();
+  await expect(page.locator('#publication-count')).toHaveText('38 of 38 records');
+  await page.setViewportSize({width:320,height:800});
+  await expect(page.locator('#standalone-menu')).toBeHidden();
+  await page.locator('.standalone-toggle').click();
+  await expect(page.locator('#standalone-menu')).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('#standalone-menu')).toBeHidden();
+});
+test('recording search and previous/next controls preserve audio assets', async ({page}) => {
+  await page.goto('/music.html');
+  await page.locator('#recording-query').fill('Reverie');
+  await expect(page.locator('.track:visible')).toHaveCount(1);
+  await expect(page.locator('.track:visible')).toContainText('Reverie');
+  await page.locator('#recording-query').fill('');
+  await expect(page.locator('.track:visible')).toHaveCount(17);
+  await page.evaluate(()=>{HTMLMediaElement.prototype.play=()=>Promise.resolve();});
+  await page.getByRole('button',{name:'Next track',exact:true}).click();
+  await expect(page.locator('#current-track')).toHaveText('Reverie');
+  await page.getByRole('button',{name:'Previous track',exact:true}).click();
+  await expect(page.locator('#current-track')).toHaveText('Esfahan Waltz');
+});
+test('structured portfolio metadata contains all 17 recordings and three apps', async ({page}) => {
+  await page.goto('/');
+  const graph=await page.locator('script[type="application/ld+json"]').evaluate(el=>JSON.parse(el.textContent)['@graph']);
+  expect(graph.filter(x=>x['@type']==='MusicRecording')).toHaveLength(17);
+  expect(graph.filter(x=>x['@type']==='WebApplication')).toHaveLength(3);
+  for(const path of ['/cv.html','/research.html','/publications.html','/projects.html','/music.html','/about.html','/legal.html']){
+    await page.goto(path);
+    await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content','summary_large_image');
+    expect(await page.locator('script[type="application/ld+json"]').evaluate(el=>JSON.parse(el.textContent).url)).toBe('https://drpouyahosseini.github.io'+path);
+  }
 });

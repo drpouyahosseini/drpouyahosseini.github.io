@@ -1,0 +1,37 @@
+/* Coordinated personal-portfolio refinements; retain established palette and typography. */
+.brand-mark{border-radius:22%;object-fit:contain}
+.hero .hero-copy .intro{max-width:56ch}
+.portfolio-directory{padding-block:clamp(2rem,4vw,3.5rem);border-bottom:1px solid var(--rule)}
+.directory-heading{display:grid;grid-template-columns:1fr;gap:.45rem;margin-bottom:1.25rem}
+.directory-heading h2{font-size:clamp(2.2rem,4vw,3.2rem)}
+.directory-heading p:last-child{max-width:70ch}
+.directory-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.8rem}
+.directory-grid a{display:flex;flex-direction:column;gap:.55rem;min-width:0;padding:clamp(.85rem,2vw,1.35rem);border:1px solid var(--rule);border-radius:var(--radius);background:var(--panel);text-decoration:none;overflow-wrap:anywhere}
+.directory-grid a:hover{border-color:var(--accent);background:var(--tint)}
+.directory-number{font-variant-numeric:tabular-nums;font-size:.8rem;color:var(--accent)}
+.directory-grid strong{font:400 clamp(1.5rem,2.4vw,2.05rem)/1.1 var(--serif)}
+.directory-grid a>span:not(.directory-number):not(.directory-link){font-size:.95rem;color:var(--body);line-height:1.4}
+.directory-link{margin-top:auto;color:var(--accent);font-weight:650;font-size:.95rem;text-decoration:underline;text-underline-offset:.2em}
+.related-projects{margin-top:1.5rem;padding:1.2rem;border:1px solid var(--rule);border-radius:var(--radius);background:var(--panel)}
+.related-projects h3{font-size:1.55rem}
+.related-projects ul{display:flex;flex-wrap:wrap;gap:.35rem 1.5rem;padding-left:1.15rem;margin-top:.7rem}
+.related-projects a{display:inline-flex;align-items:center;min-height:44px;color:var(--accent)}
+.related-section{padding-top:0}.related-section>p{margin-top:1rem}
+.publication-controls{max-width:none;padding:1rem;background:var(--panel);border:1px solid var(--rule);border-radius:var(--radius)}
+.filter-field{min-width:0;display:grid;gap:.3rem}
+.filter-field label,.recording-search label{font-weight:650;color:var(--ink)}
+.filter-field input,.filter-field select{width:100%;min-width:0}
+.filter-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;align-items:end;gap:.75rem}
+#publication-count{min-height:1.5em}
+.recording-search{display:grid;gap:.35rem;margin:.75rem 0}
+.recording-search input{font:inherit;width:100%;min-height:44px;min-width:0;padding:.45rem .7rem;border:1px solid var(--rule-strong);background:var(--panel);color:var(--ink);border-radius:.5rem}
+.recording-search output{font-size:.9rem;color:var(--body)}
+.track-navigation{display:flex;gap:.5rem;flex-wrap:wrap;margin:.6rem 0}
+.track-navigation .button{flex:1;padding:.45rem .65rem}
+.footer-links a{min-height:44px;display:inline-flex;align-items:center}
+.standalone-toggle{min-height:44px}
+@media(max-width:62rem){.directory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:46rem){.standalone .mast{display:flex;align-items:center;justify-content:space-between}.standalone .site-nav{width:100%;margin-top:0;gap:.2rem .8rem}.standalone .site-nav a{min-height:44px}.standalone .brand{min-width:0}.filter-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.filter-row button{grid-column:1/-1}}
+@media(max-width:28rem){.directory-grid{grid-template-columns:1fr}.filter-row{grid-template-columns:1fr}.hero .hero-role{font-size:.76rem;letter-spacing:.07em}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+@media print{.portfolio-directory,.standalone-toggle,.recording-search,.track-navigation,.related-projects{display:none!important}}
