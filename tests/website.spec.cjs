@@ -86,16 +86,29 @@ test('featured performance has a responsive embedded video and one external watc
   }
 });
 
-test('XPS specialization is discoverable and detailed without changing the research role', async ({page}) => {
+test('illustrated XPS showcase preserves the research identity and CV depth', async ({page}) => {
+  for(const width of [1440,390,320]){
+    await page.setViewportSize({width,height:900});
+    for(const url of ['/','/research.html']){
+      await page.goto(url);
+      const section=page.locator('#xps-expertise');
+      await expect(section.locator('#xps-title')).toHaveText('XPS & Surface Analysis');
+      await expect(section.locator('.xps-focus > div')).toHaveCount(3);
+      await expect(section.locator('.xps-summary')).toContainText('since 2016');
+      const img=section.locator('.xps-art img');
+      await img.scrollIntoViewIfNeeded();
+      await expect(img).toBeVisible();
+      await expect.poll(()=>img.evaluate(el=>el.complete&&el.naturalWidth===683&&el.naturalHeight===566)).toBe(true);
+      await expect(section.locator('figcaption')).toContainText('not experimental data');
+      expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2)).toBe(true);
+    }
+  }
   await page.goto('/');
-  await expect(page.locator('.intro')).toContainText('X-ray photoelectron spectroscopy (XPS)');
-  await page.locator('#xps-expertise a[href="research.html#xps-expertise"]').click();
-  await expect(page).toHaveURL(/research\.html#xps-expertise$/);
-  await expect(page.locator('#xps-title')).toContainText('X-ray photoelectron spectroscopy');
-  await expect(page.locator('.xps-detail-grid article')).toHaveCount(5);
-  await expect(page.locator('#xps-expertise')).toContainText('Scienta Omicron');
-  await expect(page.locator('#xps-expertise')).toContainText('multiplet splitting');
-  await page.locator('a[href="cv.html#xps-expertise"]').click();
+  await page.locator('#xps-expertise a[href="research.html#xps-publications"]').click();
+  await expect(page).toHaveURL(/research\.html#xps-publications$/);
+  await expect(page.locator('#xps-publications')).toBeVisible();
+  await page.locator('#xps-expertise a[href="cv.html#xps-expertise"]').click();
   await expect(page.locator('#xps-expertise')).toContainText('vacuum troubleshooting');
+  await expect(page.locator('#xps-expertise')).toContainText('multiplet splitting');
   await expect(page.locator('.affiliation')).toContainText('Research Scientist');
 });
