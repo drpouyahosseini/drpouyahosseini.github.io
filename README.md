@@ -1,4 +1,4 @@
-# Dr. Pouya Hosseini — Personal website
+# Pouya Hosseini — Personal website
 
 Independent academic and creative portfolio covering electrochemistry, surface science, publications, software projects and music.
 
