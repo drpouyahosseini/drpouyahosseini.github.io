@@ -1,0 +1,77 @@
+name: Refresh World Atlas previews (one-time)
+on:
+  push:
+    branches: [refresh-world-atlas-showcase]
+    paths: ['.github/workflows/refresh-atlas-previews.yml']
+permissions:
+  contents: write
+jobs:
+  capture:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refresh-world-atlas-showcase
+      - uses: actions/checkout@v4
+        with:
+          repository: worldmusicscalesatlas/worldmusicscalesatlas.github.io
+          ref: 7b86e8aadc457c786980f87b89deafb583c77b6d
+          path: .atlas-preview-source
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright@1.58.2
+      - run: npx playwright install --with-deps chromium
+      - name: Capture actual application views
+        shell: bash
+        run: |
+          python3 -m http.server 8765 --directory .atlas-preview-source >/tmp/atlas-server.log 2>&1 &
+          node --input-type=module <<'JS'
+          import { chromium } from 'playwright';
+          import { readFileSync } from 'node:fs';
+          const catalog=JSON.parse(readFileSync('.atlas-preview-source/catalog.json','utf8'));
+          if(catalog.scales.length!==283 || catalog.regions.length!==30) throw Error('Catalog mismatch');
+          const browser=await chromium.launch({args:['--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']});
+          const page=await browser.newPage({viewport:{width:1080,height:940},deviceScaleFactor:1,colorScheme:'light',reducedMotion:'reduce'});
+          const errors=[];
+          page.on('pageerror', e=>errors.push(e.message));
+          const base='http://127.0.0.1:8765/';
+          const relief=page.waitForResponse(r=>r.url().endsWith('/globe-relief.jpg')&&r.ok());
+          await page.goto(base,{waitUntil:'networkidle'});
+          await relief;
+          await page.locator('#earth canvas[aria-label^="Interactive globe"]').waitFor({state:'visible'});
+          await page.waitForTimeout(500);
+          await page.locator('#atlas').screenshot({path:'atlas-current-globe.webp.png',animations:'disabled'});
+          const views=[
+            ['?model=IR-MT-01&tonic=0&comparison=mode-dorian','Shur','atlas-current-comparison.png'],
+            ['?model=B11-BR-PIFANO-MEIA&tonic=0&comparison=B11-BR-PIFANO-TRES','Pífano','atlas-current-open-span.png']
+          ];
+          for(const [query,title,file] of views){
+            await page.goto(base+query,{waitUntil:'networkidle'});
+            await page.locator('#detail').waitFor({state:'visible'});
+            await page.waitForFunction(t=>document.querySelector('#title').textContent.includes(t),title);
+            if(!(await page.locator('#legend').isVisible()))throw Error('Missing comparison legend');
+            await page.locator('#detail').screenshot({path:file,animations:'disabled'});
+          }
+          await browser.close();
+          if(errors.length)throw Error(errors.join('\n'));
+          JS
+          mv atlas-current-globe.webp.png atlas-current-globe.png
+          python3 - <<'PY'
+          import struct
+          for p in ['atlas-current-globe.png','atlas-current-comparison.png','atlas-current-open-span.png']:
+              with open(p,'rb') as f:
+                  data=f.read(24)
+              assert data[:8]==b'\x89PNG\r\n\x1a\n',p
+              w,h=struct.unpack('>II',data[16:24])
+              print(p,w,h)
+              assert w>=600 and h>=300
+          PY
+      - name: Commit only the three captured assets to the review branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- atlas-current-globe.png atlas-current-comparison.png atlas-current-open-span.png
+          git commit -m "Capture current Atlas globe, octave comparison and open spans"
+          git push origin HEAD:refs/heads/refresh-world-atlas-showcase
