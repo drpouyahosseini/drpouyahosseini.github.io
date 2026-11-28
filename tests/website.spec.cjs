@@ -66,3 +66,22 @@ test('Reverie retains the existing audio and displays its new artwork', async ({
     await expect(page.locator('#player')).toHaveAttribute('src', /delangiz\.mp3$/);
   }
 });
+
+test('featured performance has a responsive embedded video and one external watch button', async ({page}) => {
+  await page.route('https://www.youtube-nocookie.com/**', route=>route.fulfill({contentType:'text/html',body:'<html><body>Embedded video test</body></html>'}));
+  for(const width of [1440,390,320]){
+    await page.setViewportSize({width,height:900});
+    for(const url of ['/','/music.html']){
+      await page.goto(url);
+      const section=page.locator('.music-feature');
+      const video=section.locator('iframe.performance-video');
+      await video.scrollIntoViewIfNeeded();
+      await expect(video).toBeVisible();
+      await expect(video).toHaveAttribute('src','https://www.youtube-nocookie.com/embed/prpls-ZqFvQ');
+      await expect(section.locator('a[href="https://youtu.be/prpls-ZqFvQ"]')).toHaveCount(1);
+      const b=await video.boundingBox();
+      expect(Math.abs(b.width/b.height-16/9)).toBeLessThan(.03);
+      expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2)).toBe(true);
+    }
+  }
+});
