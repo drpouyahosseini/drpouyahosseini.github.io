@@ -15,14 +15,11 @@ test('all pages load without page errors and fit mobile viewport', async ({page}
   }
   expect(errors).toEqual([]);
 });
-test('publications search and filters', async ({page}) => {
+test('publications are displayed in a clean chronological bibliography', async ({page}) => {
   await page.goto('/publications.html');
-  await expect(page.locator('#publication-count')).toHaveText('38 of 38 records');
-  await page.locator('#publication-query').fill('zzzznotapublication');
-  await expect(page.locator('#publication-count')).toHaveText('0 of 38 records');
-  await page.locator('#publication-query').clear();
-  await page.locator('#publication-kind').selectOption('preprint');
-  await expect(page.locator('#publication-count')).not.toHaveText('38 of 38 records');
+  await expect(page.locator('.publication-controls')).toHaveCount(0);
+  await expect(page.locator('#bibliography .venue')).toHaveCount(38);
+  await expect(page.locator('#bibliography ol.bibliography > li').first()).toBeVisible();
 });
 test('home navigation and recordings', async ({page}) => {
   await page.goto('/');
