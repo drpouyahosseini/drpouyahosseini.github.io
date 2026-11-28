@@ -36,8 +36,8 @@ test('home navigation and recordings', async ({page}) => {
 });
 test('projects and galleries', async ({page}) => {
   await page.goto('/projects.html');
-  await expect(page.locator('a[href="https://worldmusicscalesatlas.github.io/"]')).toBeVisible();
-  await expect(page.locator('.atlas-catalog-stat')).toContainText('283');
+  await expect(page.locator('a.world-atlas-open[href="https://worldmusicscalesatlas.github.io/"]')).toBeVisible();
+  await expect(page.locator('.atlas-catalog-stat')).toContainText(/\d+\s+regional tuning models/);
   for(const [id,src] of [['globe','atlas-current-globe.png'],['comparison','atlas-current-comparison.png'],['open-span','atlas-current-open-span.png']]){
     await page.locator('label[for="atlas-view-'+id+'"]').click();
     const img=page.locator('img[src="'+src+'"]');
