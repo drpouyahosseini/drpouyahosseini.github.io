@@ -85,3 +85,17 @@ test('featured performance has a responsive embedded video and one external watc
     }
   }
 });
+
+test('XPS specialization is discoverable and detailed without changing the research role', async ({page}) => {
+  await page.goto('/');
+  await expect(page.locator('.intro')).toContainText('X-ray photoelectron spectroscopy (XPS)');
+  await page.locator('#xps-expertise a[href="research.html#xps-expertise"]').click();
+  await expect(page).toHaveURL(/research\.html#xps-expertise$/);
+  await expect(page.locator('#xps-title')).toContainText('X-ray photoelectron spectroscopy');
+  await expect(page.locator('.xps-detail-grid article')).toHaveCount(5);
+  await expect(page.locator('#xps-expertise')).toContainText('Scienta Omicron');
+  await expect(page.locator('#xps-expertise')).toContainText('multiplet splitting');
+  await page.locator('a[href="cv.html#xps-expertise"]').click();
+  await expect(page.locator('#xps-expertise')).toContainText('vacuum troubleshooting');
+  await expect(page.locator('.affiliation')).toContainText('Research Scientist');
+});
