@@ -5,8 +5,6 @@ const caption = document.querySelector('#current-track');
 const cover = document.querySelector('#track-cover');
 const state = document.querySelector('#play-state');
 const message = document.querySelector('#play-message');
-let remainingTracks = new Set(tracks);
-const playbackMode=document.createElement('select');playbackMode.setAttribute('aria-label','Playback mode');for(const [value,label] of [['stop','Stop after track'],['sequence','Play in order'],['shuffle','Shuffle'],['repeat','Repeat track']])playbackMode.add(new Option(label,value));player.after(playbackMode);
 let currentTrack;
 let bars = [];
 
@@ -29,7 +27,6 @@ function selectTrack(track) {
     currentTrack.classList.remove('playing');
   }
   currentTrack = track;
-  remainingTracks.delete(track);
   track.setAttribute('aria-current', 'true');
   const title = track.firstElementChild.textContent;
   cover.src = track.dataset.cover;
@@ -91,7 +88,7 @@ for (const [label, offset] of [['Previous track', -1], ['Next track', 1]]) {
   });
   trackNav.append(button);
 }
-playbackMode.after(trackNav);
+player.after(trackNav);
 
 player.addEventListener('play', () => {
   message.hidden = true;
@@ -101,13 +98,7 @@ player.addEventListener('pause', renderPlayback);
 player.addEventListener('ended', () => {
   if (!player.ended) return;
   renderPlayback();
-  if(playbackMode.value==='stop')return;
-  if(playbackMode.value==='repeat'){player.currentTime=0;playTrack(currentTrack);return;}
-  if(playbackMode.value==='sequence'){const next=tracks[tracks.indexOf(currentTrack)+1];if(next)playTrack(next);return;}
-  if (!remainingTracks.size) remainingTracks = new Set(tracks);
-  const candidates = [...remainingTracks].filter(track => track !== currentTrack);
-  const next = candidates[Math.floor(Math.random() * candidates.length)] || currentTrack;
-  playTrack(next);
+
 });
 player.addEventListener('error', reportPlaybackError);
 player.addEventListener('timeupdate', renderProgress);
