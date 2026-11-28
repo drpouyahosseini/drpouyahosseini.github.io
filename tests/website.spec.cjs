@@ -26,7 +26,9 @@ test('publications search and filters', async ({page}) => {
 });
 test('home navigation and recordings', async ({page}) => {
   await page.goto('/');
-  await expect(page.locator('.affiliation')).toContainText('1 December 2026');
+  await expect(page.locator('.affiliation')).toContainText('Research Scientist');
+  await expect(page.locator('.affiliation')).toContainText('Max Planck Institute for Sustainable Materials');
+  await expect(page.locator('.affiliation')).not.toContainText('effective');
   await expect(page.locator('.track')).toHaveCount(17);
   await expect(page.locator('#player + select')).toHaveValue('stop');
   await page.locator('#player + select').selectOption('shuffle');
