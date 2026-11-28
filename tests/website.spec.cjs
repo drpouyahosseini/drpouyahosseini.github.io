@@ -36,8 +36,8 @@ test('home navigation and recordings', async ({page}) => {
 });
 test('projects and galleries', async ({page}) => {
   await page.goto('/projects.html');
-  await expect(page.locator('a[href="https://worldmusicscalesatlas.github.io/"]')).toBeVisible();
-  await expect(page.locator('.atlas-catalog-stat')).toContainText('283');
+  await expect(page.locator('a.world-atlas-open[href="https://worldmusicscalesatlas.github.io/"]')).toBeVisible();
+  await expect(page.locator('.atlas-catalog-stat')).toContainText(/\d+\s+regional tuning models/);
   for(const [id,src] of [['globe','atlas-current-globe.png'],['comparison','atlas-current-comparison.png'],['open-span','atlas-current-open-span.png']]){
     await page.locator('label[for="atlas-view-'+id+'"]').click();
     const img=page.locator('img[src="'+src+'"]');
@@ -122,16 +122,20 @@ test('portfolio directory, plain bibliography and standalone navigation', async 
   await page.keyboard.press('Escape');
   await expect(page.locator('#standalone-menu')).toBeHidden();
 });
-test('simple recording list and previous/next controls preserve audio assets', async ({page}) => {
+test('simple recording list and direct track selection preserve audio assets', async ({page}) => {
   await page.goto('/music.html');
   await expect(page.locator('#recording-query')).toHaveCount(0);
   await expect(page.getByLabel('Playback mode')).toHaveCount(0);
   await expect(page.locator('.track:visible')).toHaveCount(17);
   await page.evaluate(()=>{HTMLMediaElement.prototype.play=()=>Promise.resolve();});
-  await page.getByRole('button',{name:'Next track',exact:true}).click();
+  await expect(page.getByRole('button',{name:'Next track',exact:true})).toHaveCount(0);
+  await expect(page.getByRole('button',{name:'Previous track',exact:true})).toHaveCount(0);
+  await page.locator('#delangiz').click();
   await expect(page.locator('#current-track')).toHaveText('Reverie');
-  await page.getByRole('button',{name:'Previous track',exact:true}).click();
+  await expect(page.locator('#player')).toHaveAttribute('src', /delangiz\.mp3$/);
+  await page.locator('.track[href="esfahan-waltz.mp3"]').click();
   await expect(page.locator('#current-track')).toHaveText('Esfahan Waltz');
+  await expect(page.locator('#player')).toHaveAttribute('src', /esfahan-waltz\.mp3$/);
 });
 test('structured portfolio metadata contains all 17 recordings and three apps', async ({page}) => {
   await page.goto('/');
