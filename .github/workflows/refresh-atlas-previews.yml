@@ -1,12 +1,12 @@
 name: Refresh World Atlas previews (one-time)
 on:
-  push:
-    branches: [refresh-world-atlas-showcase]
-    paths: ['.github/workflows/refresh-atlas-previews.yml']
+  pull_request:
+    types: [opened, reopened]
 permissions:
   contents: write
 jobs:
   capture:
+    if: github.head_ref == 'refresh-world-atlas-showcase' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
