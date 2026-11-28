@@ -1,0 +1,44 @@
+const { test, expect } = require('@playwright/test');
+const pages = ["index.html","cv.html","research.html","publications.html","projects.html","music.html","about.html","legal.html"];
+test('all pages load without page errors and fit mobile viewport', async ({page}) => {
+  const errors = [];
+  page.on('pageerror', e => errors.push(e.message));
+  for (const width of [1440,390,320]) {
+    await page.setViewportSize({width,height:900});
+    for (const file of pages) {
+      const response = await page.goto('/'+file);
+      expect(response.status(), file).toBe(200);
+      await expect(page.locator('h1')).toBeVisible();
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth > innerWidth+2);
+      expect(overflow, file+' at '+width).toBe(false);
+    }
+  }
+  expect(errors).toEqual([]);
+});
+test('publications search and filters', async ({page}) => {
+  await page.goto('/publications.html');
+  await expect(page.locator('#publication-count')).toHaveText('38 of 38 records');
+  await page.locator('#publication-query').fill('zzzznotapublication');
+  await expect(page.locator('#publication-count')).toHaveText('0 of 38 records');
+  await page.locator('#publication-query').clear();
+  await page.locator('#publication-kind').selectOption('preprint');
+  await expect(page.locator('#publication-count')).not.toHaveText('38 of 38 records');
+});
+test('home navigation and recordings', async ({page}) => {
+  await page.goto('/');
+  await expect(page.locator('.affiliation')).toContainText('1 December 2026');
+  await expect(page.locator('.track')).toHaveCount(17);
+  await expect(page.locator('#player + select')).toHaveValue('stop');
+  await page.locator('#player + select').selectOption('shuffle');
+  await expect(page.locator('#player + select')).toHaveValue('shuffle');
+  await page.locator('.nav-cv').click();
+  await expect(page.locator('.cv-intro h1')).toBeVisible();
+  await page.goBack();
+  await expect(page.locator('#name')).toBeVisible();
+});
+test('projects and galleries', async ({page}) => {
+  await page.goto('/projects.html');
+  await expect(page.locator('a[href="https://worldmusicscalesatlas.github.io/"]')).toBeVisible();
+  await page.locator('label[for="atlas-view-harp"]').click();
+  await expect(page.locator('img[src="atlas-harp.png"]')).toBeVisible();
+});

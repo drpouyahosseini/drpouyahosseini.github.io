@@ -14,7 +14,7 @@ let cvRequest;
 let navigationVersion = 0;
 
 async function prepareCV() {
-  const response = await fetch(cvURL.pathname + '?v=20261121d');
+  const response = await fetch(cvURL.pathname + '?v=20261128-profile');
   if (!response.ok) throw new Error('CV unavailable');
   const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
   const hero = doc.querySelector('.cv-intro');
@@ -65,6 +65,8 @@ async function navigatePortfolio(url, push) {
   cvStyles.media = onCV ? 'all' : 'not all';
   document.body.classList.toggle('cv-page', onCV);
   document.title = onCV ? cvContent.title : homeTitle;
+  const canonical=document.querySelector('link[rel=canonical]');if(canonical)canonical.href=onCV?cvURL.href:homeURL.href;
+  for(const [property,value] of [['og:title',document.title],['og:url',onCV?cvURL.href:homeURL.href]]){const tag=document.querySelector('meta[property="'+property+'"]');if(tag)tag.content=value;}
   document.querySelector('.skip').href = onCV ? '#cv-main' : '#main';
   document.querySelector('.brand').href = homeURL;
   homeLinks.forEach((link, index) => { link.href = homeURL.href + '#' + sectionsByLink[index].id; });
@@ -82,13 +84,7 @@ document.addEventListener('click', event => {
   const link = event.target.closest('a[href]');
   if (!link || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.altKey || event.shiftKey || link.hasAttribute('download')) return;
   const url = new URL(link.href);
-  if (url.origin !== location.origin) {
-    if (!player.paused && !link.target && /^https?:$/.test(url.protocol)) {
-      link.target = '_blank';
-      link.relList.add('noopener');
-    }
-    return;
-  }
+  if (url.origin !== location.origin) return;
   if (link.target || ![cvURL.pathname, homeURL.pathname, homeURL.pathname + 'index.html'].includes(url.pathname)) return;
   if (url.pathname === location.pathname && url.hash) return;
   event.preventDefault();

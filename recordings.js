@@ -6,6 +6,7 @@ const cover = document.querySelector('#track-cover');
 const state = document.querySelector('#play-state');
 const message = document.querySelector('#play-message');
 let remainingTracks = new Set(tracks);
+const playbackMode=document.createElement('select');playbackMode.setAttribute('aria-label','Playback mode');for(const [value,label] of [['stop','Stop after track'],['sequence','Play in order'],['shuffle','Shuffle'],['repeat','Repeat track']])playbackMode.add(new Option(label,value));player.after(playbackMode);
 let currentTrack;
 let bars = [];
 
@@ -86,6 +87,10 @@ player.addEventListener('play', () => {
 player.addEventListener('pause', renderPlayback);
 player.addEventListener('ended', () => {
   if (!player.ended) return;
+  renderPlayback();
+  if(playbackMode.value==='stop')return;
+  if(playbackMode.value==='repeat'){player.currentTime=0;playTrack(currentTrack);return;}
+  if(playbackMode.value==='sequence'){const next=tracks[tracks.indexOf(currentTrack)+1];if(next)playTrack(next);return;}
   if (!remainingTracks.size) remainingTracks = new Set(tracks);
   const candidates = [...remainingTracks].filter(track => track !== currentTrack);
   const next = candidates[Math.floor(Math.random() * candidates.length)] || currentTrack;
